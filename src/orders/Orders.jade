@@ -1,0 +1,51 @@
+extends ../layouts/Main
+
+block scripts
+    script(src="OrdersController.js")
+    script(src="OrdersService.js")
+
+block content
+    div(ng-controller="OrdersController")
+        lx-tabs(layout="inline", links-tc="light", links-bgc="teal-500", indicator="yellow-500", no-divider="true", z-depth="1")
+            lx-tab(heading="รายการเบิกเวชภัณฑ์")
+                .data-table-container
+                    table.data-table.data-table--has-secondary
+                        thead
+                            tr
+                                th วันที่
+                                th เลขที่เอกสาร
+                                th เบิกจาก
+                                th ผู้เบิก
+                                th
+                        tbody
+                            tr.data-table__clickable-row
+                                td
+                                td
+                                td
+                                td
+                                td
+                                    lx-dropdown(position="right", from-top)
+                                        button(lx-ripple, lx-dropdown-toggle).btn.btn--l.btn--black.btn--icon
+                                            i.mdi.mdi--more-vert
+
+                                        lx-dropdown-menu
+                                            ul
+                                                li
+                                                    a.dropdown-link แก้ไข
+                                                li
+                                                    a.dropdown-link ลบรายการ
+
+                .grid
+                    .grid__col11
+                        | &nbsp;
+                    .grid__col1
+                        br
+                        button(lx-ripple).btn.btn--l.btn--red.btn--fab
+                            i.mdi.mdi--add
+
+            lx-tab(heading="ตรวจสอบยอดคงเหลือ (Online)")
+                | ssssss
+
+            lx-tab(heading="ตรวจสอบสถานะเบิก (Online)")
+                | ดหกดหกดหดกหด
+

@@ -1,0 +1,21 @@
+{
+  "name": "eStock",
+  "version": "0.0.1",
+  "authors": [
+    "Satit Rianpit <siteslave@msn.com>"
+  ],
+  "description": "Drug inventory system",
+  "keywords": [
+    "stock",
+    "drug",
+    "nodejs",
+    "nodewebkit"
+  ],
+  "license": "MIT",
+  "homepage": "http://his.mkh.go.th",
+  "private": true,
+  "dependencies": {
+    "angular": "~1.3.8",
+    "lumx": "~0.2.48"
+  }
+}
