@@ -1,5 +1,5 @@
 // Order services
-App.factory('OrdersService', function($q, Common) {
+App.factory('OrdersService', function ($q, Common) {
 
     var db = Common.getConnection();
 
@@ -8,12 +8,12 @@ App.factory('OrdersService', function($q, Common) {
             var q = $q.defer();
 
             db('staff')
-            .where('is_active', 'Y')
-            .select()
-            .exec(function (err, rows) {
-                if (err) q.rejecte(err);
-                else q.resolve(rows);
-            });
+                .where('is_active', 'Y')
+                .select()
+                .exec(function (err, rows) {
+                    if (err) q.rejecte(err);
+                    else q.resolve(rows);
+                });
 
             return q.promise;
         }

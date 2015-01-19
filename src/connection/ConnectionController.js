@@ -17,5 +17,3 @@ App.controller('ConnectionController', function ($scope, LxNotificationService) 
     };
 
 });
-
-

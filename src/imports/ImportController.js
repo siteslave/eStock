@@ -6,8 +6,10 @@ App.controller('ImportController', function ($scope, $timeout, LxNotificationSer
 
     $scope.showProgress = function () {
 
-        LxNotificationService.confirm('Confirmation.', 'Do you want to import drug data from cloud server?',
-                                      {ok: 'Yes, I\'m so sure', cancel: 'No'}, function (res) {
+        LxNotificationService.confirm('Confirmation.', 'Do you want to import drug data from cloud server?', {
+            ok: 'Yes, I\'m so sure',
+            cancel: 'No'
+        }, function (res) {
             if (res) {
                 $scope.isSuccess = false;
                 $scope.btnMsg = 'Importing...';
@@ -21,8 +23,6 @@ App.controller('ImportController', function ($scope, $timeout, LxNotificationSer
                 }, 5000);
             }
         });
-
-
     };
 
 });

@@ -1,5 +1,5 @@
 // Order controller
-App.controller('OrdersController', function($scope, OrdersService, LxNotificationService, LxDialogService) {
+App.controller('OrdersController', function ($scope, OrdersService, LxNotificationService, LxDialogService) {
 
     $scope.showAddItemForm = false;
 
@@ -18,12 +18,12 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
 
     // Get staff list
     OrdersService.getStaffList()
-    .then(function (rows) {
-        $scope.staff = rows;
-    }, function (err) {
-        console.log(err);
-        LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู Log.');
-    });
+        .then(function (rows) {
+            $scope.staff = rows;
+        }, function (err) {
+            console.log(err);
+            LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู Log.');
+        });
 
     $scope.showAddItem = function () {
         $scope.showAddItemForm = true;
