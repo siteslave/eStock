@@ -3,6 +3,7 @@ var path = require('path'),
     fs = require('fs'),
     jf = require('jsonfile'),
     gui = require('nw.gui'),
+    moment = require('moment'),
     win = gui.Window.get();
 
 jf.spaces = 2;
@@ -42,9 +43,15 @@ eStock.exit = function () {
 // Main application module.
 App = angular.module('App', ['lumx']);
 
-App.controller('ToolbarController', function ($scope) {
+App.controller('ToolbarController', function ($scope, LxNotificationService) {
     $scope.exitApplication = function () {
-        eStock.exit();
+
+        LxNotificationService.confirm('Exit program', 'Are you sure?', {ok: 'Yes', cancel: 'No'}, function (res) {
+            if (res) {
+                eStock.exit();
+            }
+        });
+
     };
 
     $scope.reloadApp = function () {

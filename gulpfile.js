@@ -2,7 +2,7 @@ var gulp = require('gulp'),
     jade = require('gulp-jade'),
     jshint = require('gulp-jshint'),
     watch = require('gulp-watch'),
-    less = require('gulp-less');
+    sass = require('gulp-sass');
 
 /** Jade **/
 gulp.task('jade', function () {
@@ -18,13 +18,18 @@ gulp.task('jshint', function () {
        .pipe(jshint.reporter('default'))
        .pipe(gulp.dest('./app'));
 });
-/** LESS **/
-gulp.task('less', function () {
-   return gulp.src('./src/**/*.less')
-       .pipe(less())
-       .pipe(gulp.dest('./app'));
+///** LESS **/
+//gulp.task('less', function () {
+//   return gulp.src('./src/**/*.less')
+//       .pipe(less())
+//       .pipe(gulp.dest('./app'));
+//});
+/** SCSS **/
+gulp.task('sass', function () {
+    return gulp.src('./src/**/*.scss')
+    .pipe(sass())
+    .pipe(gulp.dest('./app'));
 });
-
 /** Watch **/
 gulp.task('watch', function () {
     gulp.watch('./src/**/*.js', ['jshint']);
@@ -33,4 +38,4 @@ gulp.task('watch', function () {
 });
 
 /** Default task **/
-gulp.task('default', ['jshint', 'jade', 'less', 'watch']);
+gulp.task('default', ['jshint', 'jade', 'sass', 'watch']);

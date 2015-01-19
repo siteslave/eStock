@@ -17,7 +17,7 @@ html(lang="en")
                 .toolbar.bgc-teal-500(ng-controller="ToolbarController")
                     .toolbar__left.mr
                         button.btn.btn--l.btn--white.btn--icon(lx-ripple)
-                            i.mdi.mdi--desktop-windows
+                            i.mdi.mdi--shopping-cart
                     span(style="color: #fff;").toolbar__label.fs-title
                         | Drug inventory system
 
@@ -94,6 +94,13 @@ html(lang="en")
                             .list-content-tile.list-content-tile--two-lines
                                 strong Settings
                                 span กำหนดค่าระบบ
+                        li.list-row.list-row--has-primary.list-row--has-secondary
+                            .list-primary-tile
+                                a(href="../imports/Imports.html")
+                                    i.icon.icon--l.icon--indigo.icon--circled.mdi.mdi--cloud-download
+                            .list-content-tile.list-content-tile--two-lines
+                                strong Import Data
+                                span นำเข้าข้อมูล
 
                 .grid__col9
                     .card
