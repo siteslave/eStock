@@ -4,6 +4,7 @@ var path = require('path'),
     jf = require('jsonfile'),
     gui = require('nw.gui'),
     moment = require('moment'),
+    _ = require('lodash'),
     win = gui.Window.get();
 
 jf.spaces = 2;
@@ -29,7 +30,8 @@ if (!isExist) {
         },
         dc: {
             url: 'http://his.mkh.go.th:3001',
-            private_key: '123456'
+            private_key: '123456',
+            hospcode: '04911'
         }
     };
 
@@ -46,7 +48,10 @@ App = angular.module('App', ['lumx']);
 App.controller('ToolbarController', function ($scope, LxNotificationService) {
     $scope.exitApplication = function () {
 
-        LxNotificationService.confirm('Exit program', 'Are you sure?', {ok: 'Yes', cancel: 'No'}, function (res) {
+        LxNotificationService.confirm('Exit program', 'Are you sure?', {
+            ok: 'Yes',
+            cancel: 'No'
+        }, function (res) {
             if (res) {
                 eStock.exit();
             }

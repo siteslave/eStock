@@ -16,6 +16,19 @@ App.factory('OrdersService', function ($q, Common) {
                 });
 
             return q.promise;
+        },
+
+        getProductList: function (query) {
+            var q = $q.defer();
+            db('products')
+                .where('name', 'like', '%' + query + '%')
+                .orderBy('name', 'asc')
+                .exec(function (err, rows) {
+                    if (err) q.reject(err);
+                    else q.resolve(rows);
+                });
+
+            return q.promise;
         }
     };
 

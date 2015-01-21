@@ -34,11 +34,14 @@ block content
             i.mdi.mdi--cloud-done
             | &nbsp;Datacenter information
         .grid
-            .grid__col6
+            .grid__col2
+                lx-text-field(label="Hospcode")
+                    input(type="text", ng-model="config.dc.hospcode", ng-required="true")
+            .grid__col5
                 lx-text-field(label="Datacenter url")
                     input(type="text", ng-model="config.dc.url", ng-required="true")
         
-            .grid__col6
+            .grid__col5
                 lx-text-field(label="Private key")
                     input(type="text", ng-model="config.dc.private_key", ng-required="true")
                         

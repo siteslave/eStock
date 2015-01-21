@@ -90,11 +90,12 @@ block content
                                         i.mdi.mdi--add
                         .grid(ng-show="showAddItemForm")
                             .grid__col8
-                                lx-select(ng-model="selects.selectedStaff", placeholder="เลือกรายการเวชภัณฑ์", choices="staff", floating-label)
+                                lx-select(ng-model="ajax.selected", placeholder="เลือกรายการเวชภัณฑ์", choices="ajax.list", filter="ajax.update(newValue, oldValue)", loading="{{ ajax.loading }}", min-lenght="2", allow-clear="true", selection-to-model="ajax.toModel(data, callback)", model-to-selection="ajax.toSelection(data, callback)" floating-label)
                                     lx-select-selected
-                                        | {{ $selected.fullname }}
+                                        | {{ setProduct($selected) }}
+                                        | {{ $selected.name }}
                                     lx-select-choices
-                                        | {{ $choice.fullname}}
+                                        | {{ $choice.name}}
                             .grid__col2
                                 lx-text-field(label="จำนวนเบิก", error="!checkNumber(newProductQty)", valid="checkNumber(newProductQty)")
                                     input(type="number", ng-model="newProductQty")
@@ -103,7 +104,7 @@ block content
                             .grid__col2
                                 br
                                 br
-                                button.btn.btn--m.btn--teal.btn--raised(lx-ripple) Add
+                                button.btn.btn--m.btn--teal.btn--raised(lx-ripple, ng-click="doAddItem()") Add
                                     //- i.mdi.mdi--add-circle
                                 | &nbsp;
                                 button.btn.btn--m.btn--grey.btn--raised(lx-ripple, ng-click="clearAddItemForm()") Del
@@ -115,7 +116,6 @@ block content
                                         thead
                                             tr
                                                 th #
-                                                th รหัส
                                                 th รายการ
                                                 th หน่วย
                                                 th จำนวน
@@ -123,63 +123,34 @@ block content
                                                 th เป็นเงิน
                                                 th
                                         tbody
-                                            tr.data-table__clickable-row
-                                                td 1
+                                            tr.data-table__clickable-row(ng-repeat="p in products")
+                                                td {{$index+1}}
                                                 td
-                                                    span 00001
+                                                    span {{p.name}}
                                                 td
-                                                    span Paracetamal 500 mg
+                                                    span {{p.units}}
                                                 td
-                                                    span tabs
+                                                    span {{p.qty | number}}
                                                 td
-                                                    span 1,000
+                                                    span {{p.cost | number}}
                                                 td
-                                                    span 0.5
-                                                td
-                                                    span 500
+                                                    span {{p.qty * p.cost | number}}
                                                 td
                                                     lx-dropdown(position="right", from-top)
-                                                        button.btn.btn--l.btn--teal.btn--icon(lx-ripple, lx-dropdown-toggle)
+                                                        button.btn.btn--l.btn--grey.btn--icon(lx-ripple, lx-dropdown-toggle)
                                                             i.mdi.mdi--more-vert
                                                         lx-dropdown-menu
                                                             ul
                                                                 li
-                                                                    a.dropdown-link
-                                                                        i.mdi.mdi--edit
-                                                                        | &nbsp;Edit
-                                                                li
-                                                                    a.dropdown-link
-                                                                        i.mdi.mdi--cancel
+                                                                    a.dropdown-link(ng-click="removeItem(p.id)")
+                                                                        i.mdi.mdi--close
                                                                         | &nbsp;Remove
-                                            tr.data-table__clickable-row
-                                                td 1
-                                                td
-                                                    span 00001
-                                                td
-                                                    span Paracetamal 500 mg
-                                                td
-                                                    span tabs
-                                                td
-                                                    span 1,000
-                                                td
-                                                    span 0.5
-                                                td
-                                                    span 500
-                                                td
-                                                    lx-dropdown(position="right", from-top)
-                                                        button.btn.btn--l.btn--teal.btn--icon(lx-ripple, lx-dropdown-toggle)
-                                                            i.mdi.mdi--more-vert
-                                                        lx-dropdown-menu
-                                                            ul
-                                                                li
-                                                                    a.dropdown-link
-                                                                        i.mdi.mdi--edit
-                                                                        | &nbsp;Edit
-                                                                li
-                                                                    a.dropdown-link
-                                                                        i.mdi.mdi--cancel
-                                                                        | &nbsp;Remove
-
+                                                                        
+                                    br
+                                    .fs-title(style="float: right;")
+                                        | รวม {{total | number}} บาท
+                                    | &nbsp;
+                                      
             .dialog__actions
                 button.btn.btn--m.btn--blue.btn--raised(lx-ripple) Save
                 | &nbsp;

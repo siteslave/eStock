@@ -1,26 +1,78 @@
-App.controller('ImportController', function ($scope, $timeout, LxNotificationService, LxProgressService) {
+App.controller('ImportController', function ($scope, $timeout, Utils, Common,
+    ImportService, LxNotificationService, LxProgressService) {
+
+    var Q = require('q');
+    require('q-foreach')(Q);
 
     $scope.isSuccess = false;
+    $scope.btnMsg = 'นำเข้าข้อมูลยาจากฐานกลาง';
 
-    $scope.btnMsg = 'Import drug data from the cloud server';
+    // Get configure
+    var config = Common.getConfigure();
 
-    $scope.showProgress = function () {
+    $scope.getProducts = function () {
 
-        LxNotificationService.confirm('Confirmation.', 'Do you want to import drug data from cloud server?', {
-            ok: 'Yes, I\'m so sure',
-            cancel: 'No'
+        LxNotificationService.confirm('Confirmation.', 'คุณต้องการนำเข้าข้อมูลยาจากฐานกลาง ใช่หรือไม่?', {
+            ok: 'ใช่, ฉันต้องการนำเข้าข้อมูล',
+            cancel: 'ไม่ใช่'
         }, function (res) {
             if (res) {
+
                 $scope.isSuccess = false;
-                $scope.btnMsg = 'Importing...';
+                $scope.btnMsg = 'กำลังนำเข้าข้อมูลยา...';
                 LxProgressService.linear.show('#009688', '#progress');
 
-                $timeout(function () {
-                    LxNotificationService.success('Imported successfully.');
-                    LxProgressService.linear.hide('#progress');
-                    $scope.btnMsg = 'Drug data has been imported successfully';
-                    $scope.isSuccess = true;
-                }, 5000);
+                ImportService.dcGetProduct(config)
+                    .then(function (data) {
+
+                        // do import
+                        Q.forEach(data, function (v) {
+                            var defer = Q.defer();
+
+                            ImportService.checkDuplicated(v.code)
+                                .then(function (duplicated) {
+                                    if (!duplicated) {
+                                        ImportService.doImportDrug(v)
+                                            .then(function () {
+                                                // success
+                                            }, function (err) {
+                                                defer.reject(err);
+                                                console.log(err);
+                                            });
+                                    } else {
+                                        ImportService.doUpdateDrug(v)
+                                            .then(function () {
+                                                // success
+                                            }, function (err) {
+                                                defer.reject(err);
+                                                console.log(err);
+                                            });
+                                    }
+
+                                    defer.resolve();
+                                }, function (err) {
+                                    defer.reject(err);
+                                    console.log(err);
+                                });
+
+                            return defer.promise;
+
+                        }).then(function () {
+
+                            LxNotificationService.success('นำเข้าข้อมูลเสร็จแล้ว');
+                            LxProgressService.linear.hide('#progress');
+                            $scope.btnMsg = 'นำเข้าข้อมูลยาจากฐานกลางเสร็จเรียบร้อยแล้ว';
+                            $scope.isSuccess = true;
+
+                            $scope.products = data;
+
+                        });
+
+                    }, function (err) {
+                        console.log(err);
+                        LxProgressService.linear.hide('#progress');
+                        LxNotificationService.error(err);
+                    });
             }
         });
     };

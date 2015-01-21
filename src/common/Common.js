@@ -7,8 +7,16 @@ App.factory('Common', function () {
         getConnection: function () {
             return require('knex')({
                 client: 'mysql',
-                connection: config.db
+                connection: config.db,
+                pool: {
+                    min: 0,
+                    max: 100
+                }
             });
+        },
+        
+        getConfigure: function () {
+            return config;
         }
     };
 });
