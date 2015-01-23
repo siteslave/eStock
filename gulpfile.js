@@ -34,7 +34,7 @@ gulp.task('sass', function () {
 gulp.task('watch', function () {
     gulp.watch('./src/**/*.js', ['jshint']);
     gulp.watch('./src/**/*.jade', ['jade']);
-    gulp.watch('./src/**/*.less', ['less']);
+    gulp.watch('./src/**/*.scss', ['sass']);
 });
 
 /** Default task **/

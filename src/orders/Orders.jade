@@ -8,33 +8,74 @@ block content
     div(ng-controller="OrdersController")
         lx-tabs(layout="inline", links-tc="light", links-bgc="teal-500", indicator="yellow-500", no-divider="true", z-depth="1")
             lx-tab(heading="รายการเบิกเวชภัณฑ์")
-                .data-table-container
+                br
+                .grid
+                    .grid__col6
+                        lx-text-field(label="ระบุเลขที่ใบเบิก", fixed-label="true", icon="search")
+                            input(type="text", ng-model="query")
+                    .grid__col1
+                        button.btn.btn--m.btn--grey.btn--raised(lx-ripple, ng-click="doSearch()") ค้นหา
+                        | &nbsp;    
+                    .grid__col1
+                        | &nbsp;
+                    .grid__col4
+                            input(type="checkbox", ng-model="all", ng-change="toggleList()")#switch.switch__input
+                            label(for="switch").switch__label ส่งเบิกแล้ว
+                            span.switch__help แสดงรายการที่ส่งเบิกแล้ว
+                .grid
+                    .grid__col12
+                        | &nbsp;
+                        #progress
+                .data-table-container(lx-scrollbar, style="max-height: 380px;")
                     table.data-table.data-table--has-secondary
                         thead
                             tr
+                                th #
                                 th วันที่
-                                th เลขที่เอกสาร
-                                th เบิกจาก
-                                th ผู้เบิก
+                                th เลขที่
+                                th จำนวน
+                                th ราคา (บาท)
+                                th ส่งเบิก
+                                th นำเข้า
                                 th
                         tbody
-                            tr.data-table__clickable-row
-                                td
-                                td
-                                td
-                                td
+                            tr.data-table__clickable-row(ng-repeat="o in orders")
+                                td {{$index+1}}
+                                td {{ o.orders_date | toShortDate }}
+                                td {{ o.orders_code }}
+                                td {{ o.qty | number }}
+                                td {{ o.total | number }}
+                                td 
+                                    i.icon.icon--l.icon--green.icon--flat.mdi.mdi--done(ng-if="o.is_sent == 'Y'")
+                                    i.icon.icon--l.icon--red.icon--flat.mdi.mdi--clear(ng-if="o.is_sent == 'N'") 
+                                td 
+                                    i.icon.icon--l.icon--green.icon--flat.mdi.mdi--done(ng-if="o.is_imported == 'Y'")
+                                    i.icon.icon--l.icon--red.icon--flat.mdi.mdi--clear(ng-if="o.is_imported == 'N'")
                                 td
                                     lx-dropdown(position="right", from-top)
-                                        button(lx-ripple, lx-dropdown-toggle).btn.btn--l.btn--black.btn--icon
-                                            i.mdi.mdi--more-vert
+                                        button(lx-ripple, lx-dropdown-toggle).btn.btn--l.btn--grey.btn--icon
+                                            i.mdi.mdi--keyboard-control
 
                                         lx-dropdown-menu
                                             ul
-                                                li
-                                                    a.dropdown-link แก้ไข
-                                                li
-                                                    a.dropdown-link ลบรายการ
-
+                                                
+                                                li(ng-hide="o.is_sent == 'Y'")
+                                                    a.dropdown-link(ng-click="sendOnline(o.orders_id)")
+                                                        i.mdi.mdi--play-install
+                                                        |&nbsp;ส่งเบิกออนไลน์
+                                                li.dropdown-divider(ng-hide="o.is_sent == 'Y'")
+                                                li(ng-hide="o.is_sent == 'Y'")
+                                                    a.dropdown-link(ng-click="showEdit(o.orders_id)")
+                                                        i.mdi.mdi--edit
+                                                        |&nbsp;แก้ไข
+                                                li(ng-hide="o.is_sent == 'Y'")
+                                                    a.dropdown-link(ng-click="removeOrder(o.orders_id)")
+                                                        i.mdi.mdi--cancel
+                                                        |&nbsp;ยกเลิกรายการ
+                                                li(ng-show="o.is_sent == 'Y'")
+                                                    a.dropdown-link
+                                                        i.mdi.mdi--description
+                                                        |&nbsp; ดูข้อมูล  
                 .grid
                     .grid__col11
                         | &nbsp;
@@ -43,12 +84,11 @@ block content
                         button(lx-ripple, ng-click="showNewOrder()").btn.btn--l.btn--red.btn--fab
                             i.mdi.mdi--add
 
-            lx-tab(heading="ตรวจสอบยอดคงเหลือ (Online)")
-                | ssssss
-
             lx-tab(heading="ตรวจสอบสถานะเบิก (Online)")
                 | ดหกดหกดหดกหด
-
+                
+            lx-tab(heading="ตรวจสอบยอดคงเหลือ (Online)")
+                | ssssss
 
         lx-dialog#mdlNewOrder.dialog.dialog--l(onclose="closeingNewOrder()")
             .dialog__header
@@ -68,14 +108,15 @@ block content
 
                         .grid
                             .grid__col3
-                                lx-date-picker(label="วันที่เบิก", ng-model="orderDate")
+                                lx-date-picker(label="วันที่เบิก", model="orderDate")
                             .grid__col3
                                 lx-text-field(label="เลขที่เบิก")
                                     input(type="text", ng-model="orderCode")
 
                             .grid__col6
-                                lx-select(ng-model="selects.selectedStaff", placeholder="เลือกเจ้าหน้าที่เบิก", choices="staff", floating-label)
+                                lx-select(ng-model="selectedStaff", placeholder="เลือกเจ้าหน้าที่เบิก", choices="staff", floating-label)
                                     lx-select-selected
+                                        | {{ setStaff($selected.staff_id) }}
                                         | {{ $selected.fullname }}
                                     lx-select-choices
                                         | {{ $choice.fullname}}
@@ -90,14 +131,19 @@ block content
                                         i.mdi.mdi--add
                         .grid(ng-show="showAddItemForm")
                             .grid__col8
-                                lx-select(ng-model="ajax.selected", placeholder="เลือกรายการเวชภัณฑ์", choices="ajax.list", filter="ajax.update(newValue, oldValue)", loading="{{ ajax.loading }}", min-lenght="2", allow-clear="true", selection-to-model="ajax.toModel(data, callback)", model-to-selection="ajax.toSelection(data, callback)" floating-label)
+                                lx-select(ng-model="ajax.selected", placeholder="เลือกรายการเวชภัณฑ์", 
+                                choices="ajax.list", filter="ajax.update(newValue, oldValue)", 
+                                loading="{{ ajax.loading }}", min-lenght="2", allow-clear="true", 
+                                selection-to-model="ajax.toModel(data, callback)", 
+                                model-to-selection="ajax.toSelection(data, callback)" floating-label)
                                     lx-select-selected
                                         | {{ setProduct($selected) }}
                                         | {{ $selected.name }}
                                     lx-select-choices
                                         | {{ $choice.name}}
                             .grid__col2
-                                lx-text-field(label="จำนวนเบิก", error="!checkNumber(newProductQty)", valid="checkNumber(newProductQty)")
+                                lx-text-field(label="จำนวนเบิก", error="!checkNumber(newProductQty)", 
+                                valid="checkNumber(newProductQty)")
                                     input(type="number", ng-model="newProductQty")
                                 ul(ng-if="!checkNumber(newProductQty)").form-error
                                     li กรุณาระบุจำนวนตัวเลข และ ต้องมากกว่า 0
@@ -152,6 +198,6 @@ block content
                                     | &nbsp;
                                       
             .dialog__actions
-                button.btn.btn--m.btn--blue.btn--raised(lx-ripple) Save
+                button.btn.btn--m.btn--blue.btn--raised(lx-ripple, ng-click="doSaveOrder()") Save
                 | &nbsp;
                 button.btn.btn--m.btn--red.btn--raised(lx-ripple, lx-dialog-close) Close

@@ -7,7 +7,7 @@ block scripts
 block content
     div(ng-controller="ImportController")
         lx-tabs(links-tc="light", links-bgc="teal-500", indicator="yellow-500", no-divider="true", z-depth="1", layout="inline")
-            lx-tab(heading="ข้อมูลยา (จากคลังหลัก)")
+            lx-tab(heading="นำเข้าข้อมูลเวชภัณฑ์")
 
                 .card
                     .card__content
@@ -37,5 +37,5 @@ block content
                                         td {{ p.cost | number }}
                                         td {{ p.price | number }}
 
-            lx-tab(heading="ปปปปป")
+            lx-tab(heading="นำเข้าเวชภ้ณฑ์จากใบเบิก")
                 p xxxxxxx
