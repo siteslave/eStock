@@ -91,7 +91,7 @@ App.controller('OrdersController', function ($scope, OrdersService, LxNotificati
         $scope.staffId = staffId;
     };
 
-    $scope.closeingNewOrder = function () {
+    $scope.closingNewOrder = function () {
         $scope.products = [];
         $scope.product = null;
         $scope.total = 0;
@@ -204,7 +204,7 @@ App.controller('OrdersController', function ($scope, OrdersService, LxNotificati
     $scope.getOrdersList = function () {
 
         var opt = $scope.all ? 1 : 2;
-        
+
         OrdersService.getOrdersList(opt)
             .then(function (rows) {
                 $scope.orders = rows;
@@ -212,10 +212,9 @@ App.controller('OrdersController', function ($scope, OrdersService, LxNotificati
                 console.log(err);
                 LxNotificationService.error('เกิดข้อผิดพลาด กรุณาดู Log');
             });
-        
 
     };
-    
+
     // Show orders list
     $scope.getOrdersList();
 
@@ -307,8 +306,18 @@ App.controller('OrdersController', function ($scope, OrdersService, LxNotificati
                     })
                     .then(function (data) {
                         if (data.ok) {
-                            LxProgressService.linear.hide('#progress');
-                            LxNotificationService.success('ส่งเบิกออนไลน์เสร็จเรียบร้อย');
+
+                            // Set online
+                            OrdersService.setOnline(orderId)
+                                .then(function () {
+                                    LxProgressService.linear.hide('#progress');
+                                    LxNotificationService.success('ส่งเบิกออนไลน์เสร็จเรียบร้อย');
+                                    $scope.getOrdersList();
+                                }, function (err) {
+                                    console.log(err);
+                                    LxProgressService.linear.hide('#progress');
+                                    LxNotificationService.error('เกิดข้อผิดพลาด กรุณาดู Log');
+                                });
 
                         } else {
                             LxProgressService.linear.hide('#progress');
@@ -323,20 +332,20 @@ App.controller('OrdersController', function ($scope, OrdersService, LxNotificati
         });
 
     };
-    
+
     $scope.doSearch = function () {
-        
+
         if (!$scope.query) {
             LxNotificationService.error('กรุณาระบุคำค้นหา');
         } else {
             OrdersService.search($scope.query)
                 .then(function (rows) {
-                $scope.orders = rows;
-            }, function (err) {
-                console.log(err);
-                LxNotificationService.error('เกิดข้อผิดพลาด กรุณาดู Log');
-            });
+                    $scope.orders = rows;
+                }, function (err) {
+                    console.log(err);
+                    LxNotificationService.error('เกิดข้อผิดพลาด กรุณาดู Log');
+                });
         }
-        
+
     };
 });

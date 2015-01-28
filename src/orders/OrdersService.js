@@ -210,7 +210,10 @@ App.factory('OrdersService', function ($q, $http, Common) {
             var q = $q.defer();
 
             db('orders as o')
-                .select('o.*', 's.fullname as staff_name', db.raw('(select sum(qty * cost) from orders_detail where orders_id=o.orders_id) as total'), db.raw('(select sum(qty) from orders_detail where orders_id=o.orders_id) as qty'))
+                .select(
+                    'o.*', 's.fullname as staff_name',
+                    db.raw('(select sum(qty * cost) from orders_detail where orders_id=o.orders_id) as total'),
+                    db.raw('(select sum(qty) from orders_detail where orders_id=o.orders_id) as qty'))
                 .leftJoin('staff as s', 's.staff_id', 'o.staff_id')
                 .where('o.orders_code', 'like', '%' + orderCode + '%')
                 .groupBy('o.orders_id')
@@ -221,7 +224,30 @@ App.factory('OrdersService', function ($q, $http, Common) {
                 });
 
             return q.promise;
+        },
+        
+        /** Update online status **/
+
+        setOnline: function (orderId) {
+
+            var q = $q.defer();
+
+            db('orders')
+                .where('orders_id', orderId)
+                .update({
+                    is_sent: 'Y',
+                    sent_at: moment().format('YYYY-MM-DD HH:mm:ss')
+                })
+                .exec(function (err) {
+
+                    if (err) q.reject(err);
+                    else q.resolve();
+                
+                });
+
+            return q.promise;
         }
+
     };
 
 });
