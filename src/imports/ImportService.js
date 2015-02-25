@@ -3,13 +3,13 @@ App.factory('ImportService', function($q, $http, Common) {
         config = Common.getConfigure();
 
     return {
-        dcGetProduct: function(config) {
+        dcGetProduct: function() {
 
             var q = $q.defer();
 
             var options = {
                 method: 'GET',
-                url: config.dc.url + '/products',
+                url: config.dc.url + '/products/list',
                 params: {
                     hospcode: config.dc.hospcode,
                     key: config.dc.private_key
@@ -20,7 +20,8 @@ App.factory('ImportService', function($q, $http, Common) {
                 .success(function(data) {
                     q.resolve(data.rows);
                 })
-                .error(function(data, status, headers, config) {
+                .error(function(data, status) {
+                    console.log(status);
                     q.reject('Internet connection failed.');
                 });
 
@@ -76,7 +77,7 @@ App.factory('ImportService', function($q, $http, Common) {
                 .exec(function(err, rows) {
                     if (err) q.reject(err);
                     else {
-                        var isDuplicated = rows[0].total > 0 ? true : false;
+                        var isDuplicated = rows[0].total > 0;
                         q.resolve(isDuplicated);
                     }
                 });

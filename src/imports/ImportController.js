@@ -7,9 +7,6 @@ App.controller('ImportController', function ($scope, $timeout, Utils, Common,
     $scope.isSuccess = false;
     $scope.btnMsg = 'นำเข้าข้อมูลยาจากฐานกลาง';
 
-    // Get configure
-    var config = Common.getConfigure();
-
     $scope.getProducts = function () {
 
         LxNotificationService.confirm('Confirmation.', 'คุณต้องการนำเข้าข้อมูลยาจากฐานกลาง ใช่หรือไม่?', {
@@ -22,7 +19,7 @@ App.controller('ImportController', function ($scope, $timeout, Utils, Common,
                 $scope.btnMsg = 'กำลังนำเข้าข้อมูลยา...';
                 LxProgressService.linear.show('#009688', '#progress');
 
-                ImportService.dcGetProduct(config)
+                ImportService.dcGetProduct()
                     .then(function (data) {
 
                         // do import
