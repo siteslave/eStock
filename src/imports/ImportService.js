@@ -1,9 +1,9 @@
-App.factory('ImportService', function ($q, $http, Common) {
+App.factory('ImportService', function($q, $http, Common) {
     var db = Common.getConnection(),
         config = Common.getConfigure();
 
     return {
-        dcGetProduct: function (config) {
+        dcGetProduct: function(config) {
 
             var q = $q.defer();
 
@@ -17,17 +17,17 @@ App.factory('ImportService', function ($q, $http, Common) {
             };
 
             $http(options)
-                .success(function (data) {
+                .success(function(data) {
                     q.resolve(data.rows);
                 })
-                .error(function (data, status, headers, config) {
+                .error(function(data, status, headers, config) {
                     q.reject('Internet connection failed.');
                 });
 
             return q.promise;
         },
 
-        doImportDrug: function (data) {
+        doImportDrug: function(data) {
             var q = $q.defer();
 
             db('products')
@@ -39,7 +39,7 @@ App.factory('ImportService', function ($q, $http, Common) {
                     code: data.code,
                     stdcode: data.stdcode
                 })
-                .exec(function (err) {
+                .exec(function(err) {
                     if (err) q.reject(err);
                     else q.resolve();
                 });
@@ -47,7 +47,7 @@ App.factory('ImportService', function ($q, $http, Common) {
             return q.promise;
         },
 
-        doUpdateDrug: function (data) {
+        doUpdateDrug: function(data) {
             var q = $q.defer();
 
             db('products')
@@ -59,7 +59,7 @@ App.factory('ImportService', function ($q, $http, Common) {
                     units: data.units
                 })
                 .where('code', data.code)
-                .exec(function (err) {
+                .exec(function(err) {
                     if (err) q.reject(err);
                     else q.resolve();
                 });
@@ -67,13 +67,13 @@ App.factory('ImportService', function ($q, $http, Common) {
             return q.promise;
         },
 
-        checkDuplicated: function (code) {
+        checkDuplicated: function(code) {
             var q = $q.defer();
 
             db('products')
                 .count('* as total')
                 .where('code', code)
-                .exec(function (err, rows) {
+                .exec(function(err, rows) {
                     if (err) q.reject(err);
                     else {
                         var isDuplicated = rows[0].total > 0 ? true : false;

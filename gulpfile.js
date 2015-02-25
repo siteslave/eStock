@@ -2,7 +2,7 @@ var gulp = require('gulp'),
     jade = require('gulp-jade'),
     jshint = require('gulp-jshint'),
     watch = require('gulp-watch'),
-    sass = require('gulp-sass');
+    less = require('gulp-less');
 
 /** Jade **/
 gulp.task('jade', function () {
@@ -24,18 +24,18 @@ gulp.task('jshint', function () {
 //       .pipe(less())
 //       .pipe(gulp.dest('./app'));
 //});
-/** SCSS **/
-gulp.task('sass', function () {
-    return gulp.src('./src/**/*.scss')
-        .pipe(sass())
+/** LESS **/
+gulp.task('less', function () {
+    return gulp.src('./src/**/*.less')
+        .pipe(less())
         .pipe(gulp.dest('./app'));
 });
 /** Watch **/
 gulp.task('watch', function () {
     gulp.watch('./src/**/*.js', ['jshint']);
     gulp.watch('./src/**/*.jade', ['jade']);
-    gulp.watch('./src/**/*.scss', ['sass']);
+    gulp.watch('./src/**/*.less', ['less']);
 });
 
 /** Default task **/
-gulp.task('default', ['jshint', 'jade', 'sass', 'watch']);
+gulp.task('default', ['jshint', 'jade', 'less', 'watch']);

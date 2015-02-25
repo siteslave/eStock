@@ -1,18 +1,18 @@
 // Order services
-App.factory('OrdersService', function ($q, $http, Common) {
+App.factory('OrdersService', function($q, $http, Common) {
 
     var db = Common.getConnection(),
         config = Common.getConfigure();
 
 
     return {
-        getStaffList: function () {
+        getStaffList: function() {
             var q = $q.defer();
 
             db('staff')
                 .where('is_active', 'Y')
                 .select()
-                .exec(function (err, rows) {
+                .exec(function(err, rows) {
                     if (err) q.rejecte(err);
                     else q.resolve(rows);
                 });
@@ -20,12 +20,12 @@ App.factory('OrdersService', function ($q, $http, Common) {
             return q.promise;
         },
 
-        getProductList: function (query) {
+        getProductList: function(query) {
             var q = $q.defer();
             db('products')
                 .where('name', 'like', '%' + query + '%')
                 .orderBy('name', 'asc')
-                .exec(function (err, rows) {
+                .exec(function(err, rows) {
                     if (err) q.reject(err);
                     else q.resolve(rows);
                 });
@@ -33,7 +33,7 @@ App.factory('OrdersService', function ($q, $http, Common) {
             return q.promise;
         },
 
-        doSaveOrders: function (data) {
+        doSaveOrders: function(data) {
             var q = $q.defer();
 
             db('orders')
@@ -44,7 +44,7 @@ App.factory('OrdersService', function ($q, $http, Common) {
                     staff_id: data.staffId,
                     created_at: moment().format('YYYY-MM-DD HH:mm:ss')
                 })
-                .exec(function (err, id) {
+                .exec(function(err, id) {
                     if (err) q.reject(err);
                     else q.resolve(id);
                 });
@@ -52,7 +52,7 @@ App.factory('OrdersService', function ($q, $http, Common) {
             return q.promise;
         },
 
-        doSaveOrderDetail: function (orderId, data) {
+        doSaveOrderDetail: function(orderId, data) {
             var q = $q.defer();
 
             db('orders_detail')
@@ -62,7 +62,7 @@ App.factory('OrdersService', function ($q, $http, Common) {
                     qty: data.qty,
                     cost: data.cost
                 })
-                .exec(function (err) {
+                .exec(function(err) {
                     if (err) q.reject(err);
                     else q.resolve();
                 });
@@ -70,7 +70,7 @@ App.factory('OrdersService', function ($q, $http, Common) {
             return q.promise;
         },
 
-        getOrdersList: function (opt) {
+        getOrdersList: function(opt) {
             var q = $q.defer();
 
             if (opt === 1) { // All
@@ -82,7 +82,7 @@ App.factory('OrdersService', function ($q, $http, Common) {
                     .orderBy('o.orders_code', 'desc')
                     .groupBy('o.orders_id')
                     .limit(100)
-                    .exec(function (err, rows) {
+                    .exec(function(err, rows) {
                         if (err) q.reject(err);
                         else q.resolve(rows);
                     });
@@ -95,23 +95,22 @@ App.factory('OrdersService', function ($q, $http, Common) {
                     .orderBy('o.orders_code', 'desc')
                     .groupBy('o.orders_id')
                     .limit(100)
-                    .exec(function (err, rows) {
+                    .exec(function(err, rows) {
                         if (err) q.reject(err);
                         else q.resolve(rows);
                     });
             }
 
-
             return q.promise;
         },
 
-        removeOrder: function (id) {
+        removeOrder: function(id) {
             var q = $q.defer();
 
             db('orders')
                 .where('orders_id', id)
                 .delete()
-                .exec(function (err) {
+                .exec(function(err) {
                     if (err) q.reject(err);
                     else q.resolve();
                 });
@@ -119,14 +118,14 @@ App.factory('OrdersService', function ($q, $http, Common) {
             return q.promise;
         },
 
-        getOrders: function (orderId) {
+        getOrders: function(orderId) {
             var q = $q.defer();
 
             db('orders as o')
                 .select('o.*', 's.fullname')
                 .leftJoin('staff as s', 's.staff_id', 'o.staff_id')
                 .where('o.orders_id', orderId)
-                .exec(function (err, rows) {
+                .exec(function(err, rows) {
                     if (err) q.reject(err);
                     else q.resolve(rows[0]);
                 });
@@ -134,14 +133,14 @@ App.factory('OrdersService', function ($q, $http, Common) {
             return q.promise;
         },
 
-        getOrdersDetail: function (orderId) {
+        getOrdersDetail: function(orderId) {
             var q = $q.defer();
 
             db('orders_detail as o')
                 .select('o.*', 'p.id', 'p.code', 'p.name', 'p.units')
                 .leftJoin('products as p', 'p.id', 'o.product_id')
                 .where('o.orders_id', orderId)
-                .exec(function (err, rows) {
+                .exec(function(err, rows) {
                     if (err) q.reject(err);
                     else q.resolve(rows);
                 });
@@ -149,13 +148,13 @@ App.factory('OrdersService', function ($q, $http, Common) {
             return q.promise;
         },
 
-        removeOrderDetail: function (orderId) {
+        removeOrderDetail: function(orderId) {
             var q = $q.defer();
 
             db('orders_detail')
                 .where('orders_id', orderId)
                 .delete()
-                .exec(function (err) {
+                .exec(function(err) {
                     if (err) q.reject(err);
                     else q.resolve();
                 });
@@ -163,7 +162,7 @@ App.factory('OrdersService', function ($q, $http, Common) {
             return q.promise;
         },
 
-        updateOrder: function (orderId, orders) {
+        updateOrder: function(orderId, orders) {
             var q = $q.defer();
 
             db('orders')
@@ -173,7 +172,7 @@ App.factory('OrdersService', function ($q, $http, Common) {
                     orders_date: orders.orderDate,
                     staff_id: orders.staffId
                 })
-                .exec(function (err) {
+                .exec(function(err) {
                     if (err) q.reject(err);
                     else q.resolve();
                 });
@@ -181,7 +180,7 @@ App.factory('OrdersService', function ($q, $http, Common) {
             return q.promise;
         },
 
-        sendOnline: function (orders) {
+        sendOnline: function(orders) {
 
             var q = $q.defer();
 
@@ -196,17 +195,17 @@ App.factory('OrdersService', function ($q, $http, Common) {
             };
 
             $http(options)
-                .success(function (data) {
+                .success(function(data) {
                     q.resolve(data);
                 })
-                .error(function (data, status, headers, config) {
+                .error(function(data, status, headers, config) {
                     q.reject('Internet connection failed.');
                 });
 
             return q.promise;
         },
 
-        search: function (orderCode) {
+        search: function(orderCode) {
             var q = $q.defer();
 
             db('orders as o')
@@ -218,17 +217,17 @@ App.factory('OrdersService', function ($q, $http, Common) {
                 .where('o.orders_code', 'like', '%' + orderCode + '%')
                 .groupBy('o.orders_id')
                 .limit(100)
-                .exec(function (err, rows) {
+                .exec(function(err, rows) {
                     if (err) q.reject(err);
                     else q.resolve(rows);
                 });
 
             return q.promise;
         },
-        
+
         /** Update online status **/
 
-        setOnline: function (orderId) {
+        setOnline: function(orderId) {
 
             var q = $q.defer();
 
@@ -238,11 +237,11 @@ App.factory('OrdersService', function ($q, $http, Common) {
                     is_sent: 'Y',
                     sent_at: moment().format('YYYY-MM-DD HH:mm:ss')
                 })
-                .exec(function (err) {
+                .exec(function(err) {
 
                     if (err) q.reject(err);
                     else q.resolve();
-                
+
                 });
 
             return q.promise;

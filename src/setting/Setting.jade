@@ -17,19 +17,19 @@ block content
                 //-     i.mdi.mdi--forum
                 //-     | &nbsp;ข้อมูลหน่วยบริการ
                 form(name="frmOffice")
-                    .grid
-                        .grid__col3
+                    div(flex-container="row", flex-gutter="24")
+                        div(flex-item="3")
                             lx-text-field(label="รหัส", fixed-label="false", icon="desktop-mac")
                                 input(type="text", ng-model="hospcode", ng-required="true")
-                        .grid__col9
+                        div(flex-item="9")
                             lx-text-field(label="ชื่อหน่วยบริการ", fixed-label="false")
                                 input(type="text", ng-model="hospname", ng-required="true")
-                    .grid
-                        .grid__col12
+                    div(flex-container="row")
+                        div(flex-item="12")
                             lx-text-field(label="ที่อยู่", fixed-label="false", icon="home")
                                 input(type="text", ng-model="address", ng-required="true")
-                    .grid
-                        .grid__col4
+                    div(flex-container="row")
+                        div(flex-item="4")
                             br
                             button.btn.btn--raised.btn--l.btn--green(lx-ripple, ng-click="doSaveOffice()", ng-disabled="frmOffice.$invalid")
                                 //- i.mdi.mdi--save
@@ -39,21 +39,23 @@ block content
                     table.data-table.data-table--has-secondary.data-table--has-primary
                         thead
                             tr
-                                th
+                                th #
                                 th ชื่อ - สกุล
                                 th ตำแหน่ง
                                 th
+                            tr
+                                td(colspan="4").divider.divider--dark
                         tbody
                             tr(ng-repeat="t in staff").data-table__clickable-row
                                 td
-                                    i.icon.icon--l.icon--green.icon--flat.mdi.mdi--person(ng-if="t.is_active == 'Y'")
-                                    i.icon.icon--l.icon--red.icon--flat.mdi.mdi--person(ng-if="t.is_active == 'N'")
+                                    i.icon.icon--l.icon--green.icon--flat.mdi.mdi-account(ng-if="t.is_active == 'Y'")
+                                    i.icon.icon--l.icon--red.icon--flat.mdi.mdi-account(ng-if="t.is_active == 'N'")
                                 td {{t.fullname}}
                                 td {{t.position}}
                                 td
                                     lx-dropdown(position="right", from-top)
                                         button(lx-ripple, lx-dropdown-toggle).btn.btn--l.btn--black.btn--icon
-                                            i.mdi.mdi--more-vert
+                                            i.mdi.mdi-dots-vertical
 
                                         lx-dropdown-menu
                                             ul
@@ -62,32 +64,36 @@ block content
                                                 li
                                                     a(ng-click="doRemoveStaff(t.staff_id)").dropdown-link ลบรายการ
 
-                .grid
-                    .grid__col11
+                div(flex-container="row")
+                    div(flex-item="11")
                         | &nbsp;
-                    .grid__col1
+                    div(flex-item="1")
                         br
                         button(lx-ripple, ng-click="showNewStaff()").btn.btn--l.btn--red.btn--fab
-                            i.mdi.mdi--person-add
+                            i.mdi.mdi-account-plus
 
             lx-tab(heading="คลังย่อย")
                 .data-table-container
                     table.data-table.data-table--has-secondary.data-table--has-primary
                         thead
                             tr
-                                th
+                                th #
                                 th ชื่อคลังย่อย
+                                td ใช้งาน
                                 th
+                            tr
+                                td(colspan="4").divider.divider--dark
                         tbody
                             tr(ng-repeat="s in stocks").data-table__clickable-row
-                                td
-                                    i.icon.icon--l.icon--green.icon--flat.mdi.mdi--folder-open(ng-if="s.is_active == 'Y'")
-                                    i.icon.icon--l.icon--red.icon--flat.mdi.mdi--folder-open(ng-if="s.is_active == 'N'")
+                                td {{$index+1}}
                                 td {{s.name}}
+                                td
+                                    i.icon.icon--l.icon--green.icon--flat.mdi.mdi-check(ng-if="s.is_active == 'Y'")
+                                    i.icon.icon--l.icon--red.icon--flat.mdi.mdi-close(ng-if="s.is_active == 'N'")
                                 td
                                     lx-dropdown(position="right", from-top)
                                         button(lx-ripple, lx-dropdown-toggle).btn.btn--l.btn--black.btn--icon
-                                            i.mdi.mdi--more-vert
+                                            i.mdi.mdi-dots-vertical
 
                                         lx-dropdown-menu
                                             ul
@@ -96,13 +102,13 @@ block content
                                                 li
                                                     a(ng-click="doRemoveStock(s.sub_stock_id)").dropdown-link ลบรายการ
 
-                .grid
-                    .grid__col11
+                div(flex-container="row")
+                    div(flex-item="11")
                         | &nbsp;
-                    .grid__col1
+                    div(flex-item="1")
                         br
                         button(lx-ripple, ng-click="showNewStock()").btn.btn--l.btn--red.btn--fab
-                            i.mdi.mdi--add
+                            i.mdi.mdi-account-plus
 
 
         lx-dialog#mdlNewStaff(onclose="closingAddStaff()").dialog.dialog--l
@@ -113,22 +119,23 @@ block content
                             | เพิ่ม/แก้ไขข้อมูลเจ้าหน้าที่
                         .toolbar__right
                             button.btn.btn--l.btn--white.btn--icon(lx-ripple, lx-dialog-close)
-                                i.mdi.mdi--clear
+                                i.mdi.mdi-close
                 .dialog__content
                     .card
-                        .card__content
-                            .grid.mt
-                                .grid__col6
+                        div(class="p+")
+                            div(flex-container="row")
+                                div(flex-item="6")
                                     lx-text-field(label="ชื่อ - สกุล")
                                         input(type="text", ng-model="fullname", ng-required="true")
-                                .grid__col6
+                                div(flex-item="6")
                                     lx-text-field(label="ตำแหน่ง")
                                         input(type="text", ng-model="position", ng-required="true")
-                            .grid.mt
-                                .switch.mt
-                                    input#txtStaffIsActive(type="checkbox", ng-model="isActive", ng-checked="isActive").switch__input
-                                    label(for="txtStaffIsActive").switch__label เปิดใช้งาน
-                                    span.switch__help ทำให้ปรากฎชื่อในรายการผู้ขอเบิก
+                            div(flex-container="row")
+                                div(flex-item="12")
+                                    .switch.mt
+                                        input#txtStaffIsActive(type="checkbox", ng-model="isActive", ng-checked="isActive").switch__input
+                                        label(for="txtStaffIsActive").switch__label เปิดใช้งาน
+                                        span.switch__help ทำให้ปรากฎชื่อในรายการผู้ขอเบิก
 
                 .dialog__actions
                     button.btn.btn--l.btn--green.btn--raised(ng-click="doSaveStaff()", ng-disabled="frmNewStaff.$invalid", lx-ripple)
@@ -146,18 +153,19 @@ block content
                             | เพิ่ม/แก้ไขข้อมูลสต๊อกย่อย
                         .toolbar__right
                             button.btn.btn--l.btn--white.btn--icon(lx-ripple, lx-dialog-close)
-                                i.mdi.mdi--clear
+                                i.mdi.mdi-close
                 .dialog__content
                     .card
-                        .card__content
-                            .grid.mt
-                                .grid__col6
+                        div(class="p+")
+                            div(flex-container="row")
+                                div(flex-item="6")
                                     lx-text-field(label="ชื่อสต๊อก")
                                         input(type="text", ng-model="stockName", ng-required="true")
-                            .grid.mt
-                                .switch.mt
-                                    input#txtStockIsActive(type="checkbox", ng-model="isStockActive", ng-checked="isStockActive").switch__input
-                                    label(for="txtStockIsActive").switch__label เปิดใช้งาน
+                            div(flex-container="row")
+                                div(flex-item="12")
+                                    .switch.mt
+                                        input#txtStockIsActive(type="checkbox", ng-model="isStockActive", ng-checked="isStockActive").switch__input
+                                        label(for="txtStockIsActive").switch__label เปิดใช้งาน
 
                 .dialog__actions
                     button.btn.btn--l.btn--green.btn--raised(ng-click="doSaveStock()", ng-disabled="frmNewSubStock.$invalid", lx-ripple)

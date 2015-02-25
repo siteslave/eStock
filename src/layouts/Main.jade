@@ -7,24 +7,35 @@ html(lang="en")
 
         title eStock (Drug inventory system for PCU)
 
-        link(href="../../vendor/lumx/dist/css/lumx.css", rel="stylesheet")
+        link(href="../../vendor/lumx/dist/lumx.css", rel="stylesheet")
+        link(href="../../vendor/mdi/materialdesignicons.css", rel="stylesheet")
         link(href="../css/app.css", rel="stylesheet")
+        link(rel="stylesheet", href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700")
 
     body(ng-app="App")
 
-        .grid
-            .grid__col12
+        div(flex-contrainer="row")
+            div(flex-item="12")
                 .toolbar.bgc-teal-500(ng-controller="ToolbarController")
                     .toolbar__left.mr
                         button.btn.btn--l.btn--white.btn--icon(lx-ripple)
-                            i.mdi.mdi--shopping-cart
+                            i.mdi.mdi-shopping
                     span(style="color: #fff;").toolbar__label.fs-title
                         | Drug inventory system
 
                     .toolbar__right
+                        button.btn.btn--white.btn--l.btn--icon(lx-ripple, ng-click="reloadApp()")
+                            i.mdi.mdi-refresh
+
+                        button.btn.btn--white.btn--l.btn--icon(lx-ripple, ng-click="showDevTools()")
+                            i.mdi.mdi-android-debug-bridge
+                        //
+                        //button.btn.btn--white.btn--l.btn--icon(lx-ripple, ng-click="minimizedWindow()")
+                        //    i.mdi.mdi-minus-circle
+
                         lx-dropdown(position="right", from-top)
                             button.btn.btn--white.btn--l.btn--icon(lx-ripple, lx-dropdown-toggle)
-                                i.mdi.mdi--more-vert
+                                i.mdi.mdi-dots-vertical
                             lx-dropdown-menu
                                 ul
                                     li
@@ -37,81 +48,73 @@ html(lang="en")
                                     li
                                         a(ng-click="exitApplication()").dropdown-link Exit program
 
-                        button.btn.btn--white.btn--l.btn--icon(lx-ripple, ng-click="reloadApp()")
-                            i.mdi.mdi--loop
+        div(flex-container="row")
+            div(flex-item="3")
+                ul.list
+                    li.list-row.list-row--has-primary.list-row--has-separator
+                        .list-primary-tile
+                            a
+                                i.icon.icon--l.icon--teal.icon--circled.mdi.mdi-home
+                        .list-content-tile.list-content-tile--two-lines
+                            strong Home
+                            span หน้าหลัก
 
-                        button.btn.btn--white.btn--l.btn--icon(lx-ripple, ng-click="showDevTools()")
-                            i.mdi.mdi--bug-report
+                    li.list-row.list-row--has-primary.list-row--has-separator
+                        .list-primary-tile
+                            a(href="../orders/Orders.html")
+                                i.icon.icon--l.icon--green.icon--circled.mdi.mdi-cart-outline
+                        .list-content-tile.list-content-tile--two-lines
+                            strong Orders
+                            span เบิกเวชภัณฑ์
 
-                        button.btn.btn--white.btn--l.btn--icon(lx-ripple, ng-click="minimizedWindow()")
-                            i.mdi.mdi--expand-more
-            .grid
-                .grid__col3
-                    ul.list
-                        li.list-row.list-row--has-primary.list-row--has-separator
-                            .list-primary-tile
-                                a
-                                    i.icon.icon--l.icon--teal.icon--circled.mdi.mdi--home
-                            .list-content-tile.list-content-tile--two-lines
-                                strong Home
-                                span หน้าหลัก
+                    li.list-row.list-row--has-primary.list-row--has-separator
+                        .list-primary-tile
+                            a
+                                i.icon.icon--l.icon--deep-purple.icon--circled.mdi.mdi-wallet-membership
+                        .list-content-tile.list-content-tile--two-lines
+                            strong Stock Card
+                            span ข้อมูลสต๊อกการ์ด
 
-                        li.list-row.list-row--has-primary.list-row--has-separator
-                            .list-primary-tile
-                                a(href="../orders/Orders.html")
-                                    i.icon.icon--l.icon--green.icon--circled.mdi.mdi--add-shopping-cart
-                            .list-content-tile.list-content-tile--two-lines
-                                strong Orders
-                                span เบิกเวชภัณฑ์
+                    li.list-row.list-row--has-primary.list-row--has-separator
+                        .list-primary-tile
+                            a
+                                i.icon.icon--l.icon--purple.icon--circled.mdi.mdi-printer
+                        .list-content-tile.list-content-tile--two-lines
+                            strong Reports
+                            span ระบบรายงาน
+                    li.list-row.list-row--has-primary.list-row--has-separator
+                        .list-primary-tile
+                            a
+                                i.icon.icon--l.icon--pink.icon--circled.mdi.mdi-shopping
+                        .list-content-tile.list-content-tile--two-lines
+                            strong Products
+                            span ข้อมูลเวชภัณฑ์
 
-                        li.list-row.list-row--has-primary.list-row--has-separator
-                            .list-primary-tile
-                                a
-                                    i.icon.icon--l.icon--deep-purple.icon--circled.mdi.mdi--account-balance-wallet
-                            .list-content-tile.list-content-tile--two-lines
-                                strong Stock Card
-                                span ข้อมูลสต๊อกการ์ด
+                    li.list-row.list-row--has-primary.list-row--has-separator
+                        .list-primary-tile
+                            a(href="../setting/Setting.html")
+                                i.icon.icon--l.icon--red.icon--circled.mdi.mdi-settings
+                        .list-content-tile.list-content-tile--two-lines
+                            strong Settings
+                            span กำหนดค่าระบบ
+                    li.list-row.list-row--has-primary.list-row--has-separator
+                        .list-primary-tile
+                            a(href="../imports/Imports.html")
+                                i.icon.icon--l.icon--indigo.icon--circled.mdi.mdi-cloud-download
+                        .list-content-tile.list-content-tile--two-lines
+                            strong Import Data
+                            span นำเข้าข้อมูล
 
-                        li.list-row.list-row--has-primary.list-row--has-separator
-                            .list-primary-tile
-                                a
-                                    i.icon.icon--l.icon--purple.icon--circled.mdi.mdi--print
-                            .list-content-tile.list-content-tile--two-lines
-                                strong Reports
-                                span ระบบรายงาน
-                        li.list-row.list-row--has-primary.list-row--has-separator
-                            .list-primary-tile
-                                a
-                                    i.icon.icon--l.icon--pink.icon--circled.mdi.mdi--shop-two
-                            .list-content-tile.list-content-tile--two-lines
-                                strong Products
-                                span ข้อมูลเวชภัณฑ์
-
-                        li.list-row.list-row--has-primary.list-row--has-separator
-                            .list-primary-tile
-                                a(href="../setting/Setting.html")
-                                    i.icon.icon--l.icon--red.icon--circled.mdi.mdi--settings
-                            .list-content-tile.list-content-tile--two-lines
-                                strong Settings
-                                span กำหนดค่าระบบ
-                        li.list-row.list-row--has-primary.list-row--has-separator
-                            .list-primary-tile
-                                a(href="../imports/Imports.html")
-                                    i.icon.icon--l.icon--indigo.icon--circled.mdi.mdi--cloud-download
-                            .list-content-tile.list-content-tile--two-lines
-                                strong Import Data
-                                span นำเข้าข้อมูล
-
-                .grid__col9
-                    .card
-                        .card__content
-                            block content
+            div(flex-item="9")
+                div(class="card", style="min-height: 538px;")
+                    div(class="p+")
+                        block content
 
         script(src="../../vendor/jquery/dist/jquery.min.js")
         script(src="../../vendor/velocity/velocity.min.js")
         script(src="../../vendor/moment/min/moment-with-locales.min.js")
         script(src="../../vendor/angular/angular.js")
-        script(src="../../vendor/lumx/dist/js/lumx.js")
+        script(src="../../vendor/lumx/dist/lumx.min.js")
 
         script(src="../app.js")
         script(src="../common/Common.js")
@@ -119,5 +122,3 @@ html(lang="en")
         script(src="../common/Filters.js")
         //- Application scripts
         block scripts
-
-

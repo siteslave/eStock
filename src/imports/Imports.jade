@@ -10,11 +10,11 @@ block content
             lx-tab(heading="นำเข้าข้อมูลเวชภัณฑ์")
 
                 .card
-                    .card__content
+                    div(class="p+")
                         div#progress
                         button.btn.btn--l.btn--red.btn--raised(lx-ripple, ng-click="getProducts()", ng-hide="isSuccess") {{ btnMsg }}
                         .fs-title(ng-show="isSuccess") 
-                            i.icon.icon--l.icon--green.icon--flat.mdi.mdi--done 
+                            i.icon.icon--l.icon--green.icon--flat.mdi.mdi-check
                             | &nbsp;รายการยาที่ถูกนำเข้าแล้ว
       
                         .data-table-container(ng-show="isSuccess")
@@ -27,6 +27,8 @@ block content
                                         //- th หน่วย
                                         th ทุน
                                         th ขาย
+                                    tr
+                                        td(colspan="5").divider.divider--dark
 
                                 tbody
                                     tr.data-table__clickable-row(ng-repeat="p in products")
