@@ -24,11 +24,11 @@ html(lang="en")
                         | Drug inventory system
 
                     .toolbar__right
-                        button.btn.btn--white.btn--l.btn--icon(lx-ripple, ng-click="reloadApp()")
-                            i.mdi.mdi-refresh
-
-                        button.btn.btn--white.btn--l.btn--icon(lx-ripple, ng-click="showDevTools()")
-                            i.mdi.mdi-android-debug-bridge
+                        //button.btn.btn--white.btn--l.btn--icon(lx-ripple, ng-click="reloadApp()")
+                        //    i.mdi.mdi-refresh
+                        //
+                        //button.btn.btn--white.btn--l.btn--icon(lx-ripple, ng-click="showDevTools()")
+                        //    i.mdi.mdi-android-debug-bridge
                         //
                         //button.btn.btn--white.btn--l.btn--icon(lx-ripple, ng-click="minimizedWindow()")
                         //    i.mdi.mdi-minus-circle
@@ -84,7 +84,7 @@ html(lang="en")
                             span ระบบรายงาน
                     li.list-row.list-row--has-primary.list-row--has-separator
                         .list-primary-tile
-                            a
+                            a(href="../products/Products.html")
                                 i.icon.icon--l.icon--pink.icon--circled.mdi.mdi-shopping
                         .list-content-tile.list-content-tile--two-lines
                             strong Products
@@ -114,6 +114,7 @@ html(lang="en")
         script(src="../../vendor/velocity/velocity.min.js")
         script(src="../../vendor/moment/min/moment-with-locales.min.js")
         script(src="../../vendor/angular/angular.js")
+        script(src="../../vendor/angular-route/angular-route.js")
         script(src="../../vendor/lumx/dist/lumx.min.js")
 
         script(src="../app.js")

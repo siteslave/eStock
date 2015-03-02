@@ -1,0 +1,81 @@
+.fs-title
+    i.mdi.mdi-cart
+    | รายการเวชภัณฑ์
+
+div(flex-container="row", flex-gutter="24")
+    div(flex-item="9")
+        lx-text-field(label="ค้นหา...", fixed-label="true", icon="magnify")
+            input(type="text", ng-model="query")
+
+    div(flex-item="3")
+        button.btn.btn--l.btn--red.btn--raised นำเข้ารายการเวชภัณฑ์
+
+.data-table-container
+    table.data-table.data-table--has-secondary
+        thead
+            tr
+                th #
+                th รหัส
+                th icode
+                th รายการเวชภัณฑ์
+                th ทุน
+                th ขาย
+                th คงเหลือ
+                th
+            tr
+                td(colspan="8").divider.divider--dark
+
+        tbody
+            tr(ng-repeat="p in products | filter: query").data-table__clickable-row
+                td {{$index+1}}
+                td {{p.code}}
+                td {{p.icode}}
+                td {{p.name}}
+                td {{p.cost}}
+                td {{p.price}}
+                td {{ 0 }}
+                td
+                    lx-dropdown(position="right", from-top)
+                        button.btn.btn--l.btn--grey.btn--icon(lx-ripple, lx-dropdown-toggle)
+                            i.mdi.mdi-dots-vertical
+                        lx-dropdown-menu
+                            ul
+                                li
+                                    a(ng-click="showMapping(p.code, p.name)").dropdown-link
+                                        i.mdi.mdi-checkbox-multiple-marked-outline
+                                        | &nbsp; Map รหัสเวชภัณฑ์
+
+                                li
+                                    a(href="#/card").dropdown-link
+                                        i.mdi.mdi-desktop-mac
+                                        | &nbsp; Stock card...
+
+lx-dialog.dialog.dialog--l(onclose="closingDialog()")#mdlMapping
+    .dialog__header
+        .toolbar.bgc-light-blue-500(class="pl++")
+            span.toolbar__label.tc-white.fs-title
+                | Map รายการเวชภัณฑ์
+
+            .toolbar__right
+                button.btn.btn--l.btn--white.btn--icon(lx-ripple, lx-dialog-close)
+                    i.mdi.mdi-close
+    .dialog__content
+        div(class="p++")
+            div(flex-container="row", flex-gutter="24")
+                div(flex-item="2")
+                    lx-text-field(label="รหัสเวชภัณฑ์", fixed-label="false", icon="beaker-outline")
+                        input(type="text", ng-model="code", ng-disabled="true")
+                div(flex-item="10")
+                    lx-text-field(label="ชื่อเวชภัณฑ์", fixed-label="false", icon="clipboard-text")
+                        input(type="text", ng-model="name", ng-disabled="true")
+            div(flex-container="row", flex-gutter="24")
+                div(flex-item)
+                    lx-select(ng-model="ajax.selected", placeholder="เลือกรายการเวชภัณฑ์",
+                    choices="ajax.list", filter="ajax.update(newValue, oldValue)",
+                    loading="{{ ajax.loading }}", min-lenght="2", allow-clear="true", floating-label)
+                        lx-select-selected [{{$selected.icode}}] {{ $selected.name }}
+                        lx-select-choices {{ $choice.name}}
+    .dialog__actions
+        button.btn.btn--l.btn--green.btn--raised(lx-ripple, ng-click="doMapping()") บันทึกรายการ
+        | &nbsp;
+        button.btn.btn--l.btn--grey.btn--raised(lx-ripple, lx-dialog-close) ปิดหน้าต่าง

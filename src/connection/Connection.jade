@@ -9,9 +9,9 @@ block content
         | &nbsp;Connection setting
     br
     form(name="frmConnection", ng-controller="ConnectionController")
-        .fs-subhead
-            i.mdi.mdi--desktop-mac
-            | &nbsp;Database information
+        .fs-title
+            i.mdi.mdi-desktop-mac
+            | &nbsp;Stock Database information
         div(flex-container="row", flex-gutter="24")
             div(flex-item="6")
                 lx-text-field(label="Server address")
@@ -30,8 +30,29 @@ block content
                 lx-text-field(label="Password")
                     input(type="password", ng-model="config.db.password", ng-required="true")
         br
-        .fs-subhead
-            i.mdi.mdi--cloud-done
+        .fs-title
+            i.mdi.mdi-desktop-mac
+            | &nbsp;HIS Database information
+        div(flex-container="row", flex-gutter="24")
+            div(flex-item="6")
+                lx-text-field(label="Server address")
+                    input(type="text", ng-model="config.hos.host", ng-required="true")
+            div(flex-item="2")
+                lx-text-field(label="Port")
+                    input(type="number", ng-model="config.hos.port", ng-required="true")
+            div(flex-item="4")
+                lx-text-field(label="Database name")
+                    input(type="text", ng-model="config.hos.database", ng-required="true")
+        div(flex-container="row", flex-gutter="24")
+            div(flex-item="6")
+                lx-text-field(label="Username")
+                    input(type="text", ng-model="config.hos.user", ng-required="true")
+            div(flex-item="6")
+                lx-text-field(label="Password")
+                    input(type="password", ng-model="config.hos.password", ng-required="true")
+
+        .fs-title
+            i.mdi.mdi-cloud-upload
             | &nbsp;Datacenter information
         div(flex-container="row", flex-gutter="24")
             div(flex-item="2")

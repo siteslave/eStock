@@ -26,7 +26,14 @@ if (!isExist) {
             port: 3306,
             database: 'estock',
             user: 'root',
-            password: '789124'
+            password: '123456'
+        },
+        hos: {
+            host: '127.0.0.1',
+            port: 3306,
+            database: 'estock',
+            user: 'root',
+            password: '123456'
         },
         dc: {
             url: 'http://his.mkh.go.th:3001',
@@ -43,7 +50,7 @@ eStock.exit = function () {
 };
 
 // Main application module.
-App = angular.module('App', ['lumx']);
+App = angular.module('App', ['lumx', 'ngRoute']);
 
 App.controller('ToolbarController', function ($scope, LxNotificationService) {
     $scope.exitApplication = function () {

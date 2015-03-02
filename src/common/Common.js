@@ -14,6 +14,16 @@ App.factory('Common', function () {
                 }
             });
         },
+        getHISConnection: function () {
+            return require('knex')({
+                client: 'mysql',
+                connection: config.hos,
+                pool: {
+                    min: 0,
+                    max: 100
+                }
+            });
+        },
         
         getConfigure: function () {
             return config;
