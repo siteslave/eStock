@@ -1,8 +1,11 @@
 .fs-title
     i.mdi.mdi-cart
-    | รายการเวชภัณฑ์
-
-div(flex-container="row", flex-gutter="24")
+    | &nbsp; รายการเวชภัณฑ์
+div(flex-container="row", ng-show="isLoading")
+    div(flex-item="12")
+        | &nbsp;
+        #progress
+div(flex-container="row", flex-gutter="24", ng-hide="isLoading")
     div(flex-item="9")
         lx-text-field(label="ค้นหา...", fixed-label="true", icon="magnify")
             input(type="text", ng-model="query")
@@ -74,7 +77,7 @@ lx-dialog.dialog.dialog--l(onclose="closingDialog()")#mdlMapping
                     choices="ajax.list", filter="ajax.update(newValue, oldValue)",
                     loading="{{ ajax.loading }}", min-lenght="2", allow-clear="true", floating-label)
                         lx-select-selected [{{$selected.icode}}] {{ $selected.name }}
-                        lx-select-choices {{ $choice.name}}
+                        lx-select-choices {{ $choice.name }}
     .dialog__actions
         button.btn.btn--l.btn--green.btn--raised(lx-ripple, ng-click="doMapping()") บันทึกรายการ
         | &nbsp;

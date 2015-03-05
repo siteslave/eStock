@@ -1,4 +1,7 @@
-App.controller('MainController', function ($scope, MainService, LxNotificationService, LxDialogService) {
+App.controller('MainController', function ($scope, MainService, LxNotificationService, LxDialogService, LxProgressService) {
+
+    LxProgressService.linear.show('#009688', '#progress');
+    $scope.isLoading = true;
 
     $scope.all = function () {
 
@@ -7,9 +10,12 @@ App.controller('MainController', function ($scope, MainService, LxNotificationSe
         MainService.all()
             .then(function (rows) {
                 $scope.products = rows;
+                LxProgressService.linear.hide();
+                $scope.isLoading = false;
             }, function (err) {
                 console.log(err);
                 LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู Log');
+                LxProgressService.linear.hide();
             });
 
     };

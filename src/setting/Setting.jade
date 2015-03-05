@@ -48,13 +48,13 @@ block content
                         tbody
                             tr(ng-repeat="t in staff").data-table__clickable-row
                                 td
-                                    i.icon.icon--l.icon--green.icon--flat.mdi.mdi-account(ng-if="t.is_active == 'Y'")
-                                    i.icon.icon--l.icon--red.icon--flat.mdi.mdi-account(ng-if="t.is_active == 'N'")
+                                    i.icon.icon--s.icon--green.icon--flat.mdi.mdi-account(ng-if="t.is_active == 'Y'")
+                                    i.icon.icon--s.icon--red.icon--flat.mdi.mdi-account(ng-if="t.is_active == 'N'")
                                 td {{t.fullname}}
                                 td {{t.position}}
                                 td
                                     lx-dropdown(position="right", from-top)
-                                        button(lx-ripple, lx-dropdown-toggle).btn.btn--l.btn--black.btn--icon
+                                        button(lx-ripple, lx-dropdown-toggle).btn.btn--l.btn--grey.btn--icon
                                             i.mdi.mdi-dots-vertical
 
                                         lx-dropdown-menu
@@ -88,11 +88,11 @@ block content
                                 td {{$index+1}}
                                 td {{s.name}}
                                 td
-                                    i.icon.icon--l.icon--green.icon--flat.mdi.mdi-check(ng-if="s.is_active == 'Y'")
-                                    i.icon.icon--l.icon--red.icon--flat.mdi.mdi-close(ng-if="s.is_active == 'N'")
+                                    i.icon.icon--s.icon--green.icon--flat.mdi.mdi-check(ng-if="s.is_active == 'Y'")
+                                    i.icon.icon--s.icon--red.icon--flat.mdi.mdi-close(ng-if="s.is_active == 'N'")
                                 td
                                     lx-dropdown(position="right", from-top)
-                                        button(lx-ripple, lx-dropdown-toggle).btn.btn--l.btn--black.btn--icon
+                                        button(lx-ripple, lx-dropdown-toggle).btn.btn--l.btn--grey.btn--icon
                                             i.mdi.mdi-dots-vertical
 
                                         lx-dropdown-menu

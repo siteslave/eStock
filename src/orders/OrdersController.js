@@ -5,7 +5,6 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
     $scope.showAddItemForm = false;
     $scope.product = null;
     $scope.products = [];
-    $scope.staffId = null;
     $scope.total = 0.00;
     $scope.isUpdate = false;
     $scope.orderId = null;
@@ -40,18 +39,51 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
                 $scope.ajax.list = false;
             }
         },
-        loading: false
+        loading: false,
+        selected: null,
+        toModel: function(data, callback)
+        {
+            if (data)
+            {
+                callback(data);
+            }
+            else
+            {
+                callback();
+            }
+        }
+    };
+
+    $scope.staff = {
+        list: [],
+        loading: false,
+        selected: null,
+        toModel: function(data, callback)
+        {
+            if (data)
+            {
+                callback(data);
+            }
+            else
+            {
+                callback();
+            }
+        }
     };
 
     $scope.doAddItem = function() {
-        var id = _.findIndex($scope.products, {
-            'id': $scope.product.id
-        });
 
         if (angular.isNumber($scope.newProductQty)) {
             if ($scope.newProductQty <= 0) {
                 LxNotificationService.warning('กรุณาระบุตัวเลขที่มากกว่า 0');
             } else {
+
+                $scope.product = $scope.ajax.selected;
+
+                var id = _.findIndex($scope.products, {
+                    'id': $scope.ajax.selected.id
+                });
+
                 if (id != -1) {
                     $scope.products[id].qty = $scope.product.qty + $scope.newProductQty;
                 } else {
@@ -83,21 +115,12 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
         });
     };
 
-    $scope.setProduct = function(product) {
-        $scope.product = product;
-    };
-
-    $scope.setStaff = function(staffId) {
-        $scope.staffId = staffId;
-    };
-
     $scope.closingNewOrder = function() {
         $scope.products = [];
         $scope.product = null;
         $scope.total = 0;
         $scope.showAddItemForm = false;
         $scope.orderCode = null;
-        $scope.staff = null;
         $scope.orderId = null;
         $scope.isUpdate = false;
     };
@@ -111,7 +134,7 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
     $scope.getStaffList = function() {
         OrdersService.getStaffList()
             .then(function(rows) {
-                $scope.staff = rows;
+                $scope.staff.list = rows;
             }, function(err) {
                 console.log(err);
                 LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู Log.');
@@ -129,19 +152,20 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
 
     // Save order
     $scope.doSaveOrder = function() {
-
         // Validation
-        if (!$scope.orderDate || !$scope.staffId) {
-            LxNotificationService.error('กรุณาระบุวันที่เบิก และ เจ้าหน้าที่เบิก');
+        if (!$scope.orderDate) {
+            LxNotificationService.error('กรุณาระบุวันที่เบิก');
+        } else if(!$scope.staff.selected) {
+            LxNotificationService.error('กรุณาระบุเจ้าหน้าที่');
         } else {
             if ($scope.products.length === 0) {
-                LxNotificationService.error('กรุณาเลืิอกรายการเวชภัณฑ์');
+                LxNotificationService.error('กรุณาเลือกเวชภัณฑ์');
             } else {
 
                 var orders = {
                     orderCode: $scope.orderCode,
                     orderDate: moment($scope.orderDate).format('YYYY-MM-DD'),
-                    staffId: $scope.staffId,
+                    staffId: $scope.staff.selected.staff_id,
                     items: $scope.products
                 };
 
@@ -230,7 +254,7 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
         }, function(res) {
             if (res) {
                 OrdersService.removeOrder(orderId)
-                    .then(function(err) {
+                    .then(function() {
                         LxNotificationService.success('ลบรายการเสร็จเรียบร้อยแล้ว');
                         $scope.getOrdersList();
                     }, function(err) {

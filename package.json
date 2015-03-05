@@ -9,7 +9,7 @@
     "show": true,
     "title": "Drug inventory system",
     "icon": "app/img/icon.png",
-    "toolbar": false,
+    "toolbar": true,
     "frame": true,
     "width": 1050,
     "height": 640,
