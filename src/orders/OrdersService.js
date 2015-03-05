@@ -245,6 +245,76 @@ App.factory('OrdersService', function($q, $http, Common) {
                 });
 
             return q.promise;
+        },
+
+        /* Get online status */
+        getOnlineStatus: function () {
+
+            var q = $q.defer();
+
+            var options = {
+                method: 'POST',
+                url: config.dc.url + '/api/orders/all',
+                data: {
+                    hospcode: config.dc.hospcode,
+                    key: config.dc.private_key
+                }
+            };
+
+            $http(options)
+                .success(function(data) {
+                    q.resolve(data);
+                })
+                .error(function() {
+                    q.reject('Internet connection failed.');
+                });
+
+            return q.promise;
+        },
+
+        /* Get status list */
+        getStatusList: function () {
+            var q = $q.defer();
+
+            var options = {
+                method: 'POST',
+                url: config.dc.url + '/orders/status/list'
+            };
+
+            $http(options)
+                .success(function(data) {
+                    q.resolve(data);
+                })
+                .error(function() {
+                    q.reject('Internet connection failed.');
+                });
+
+            return q.promise;
+        },
+
+        /* Get order detail */
+        getOnlineDetail: function (id) {
+            var q = $q.defer();
+
+            var options = {
+                method: 'POST',
+                url: config.dc.url + '/api/orders/detail',
+                data: {
+                    id: id,
+                    hospcode: config.dc.hospcode,
+                    key: config.dc.private_key
+                }
+            };
+
+            $http(options)
+                .success(function(data) {
+                    q.resolve(data);
+                })
+                .error(function() {
+                    q.reject('Internet connection failed.');
+                });
+
+            return q.promise;
         }
 
     };

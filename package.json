@@ -2,7 +2,7 @@
   "name": "eStock",
   "version": "0.0.1",
   "description": "Drug inventory system",
-  "main": "app/pages/Index.html",
+  "main": "app/login/Login.html",
   "locale": "th_TH",
   "single-instance": true,
   "window": {
@@ -49,6 +49,7 @@
     "gulp-less": "^3.0.1"
   },
   "dependencies": {
+    "MD5": "^1.2.1",
     "gulp-watch": "^4.1.1",
     "jsonfile": "^2.0.0",
     "knex": "^0.7.3",

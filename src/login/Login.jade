@@ -1,0 +1,27 @@
+extends ../layouts/Login
+
+block scripts
+    script(src="LoginController.js")
+    script(src="LoginService.js")
+
+block content
+    .fs-display-1.display-block
+        i.mdi.mdi-security.icon.icon--l.icon--green.icon--circled
+        | &nbsp; Please login
+
+    form(name="frmLogin", ng-controller="LoginController")
+        div(flex-container="column", style="width: 400px;")
+            div(flex-item)
+                lx-text-field(label="ชื่อผู้ใช้งาน", fixed-label="false", icon="account")
+                    input(type="text", ng-model="username", ng-required="true")
+            div(flex-item)
+                lx-text-field(label="รหัสผ่าน", fixed-label="false", icon="key")
+                    input(type="password", ng-model="password", ng-required="true")
+            div(flex-item)
+                lx-select(ng-model="selects.selectedPeriod", placeholder="เลือกปีงบประมาณ",
+                choices="selects.list", floating-label, selection-to-model="selects.toModel(data)")
+                    lx-select-selected {{ $selected.name }}
+                    lx-select-choices {{ $choice.name }}
+
+            div(flex-item)
+                button.btn.btn--l.btn--green.btn--raised(lx-ripple, ng-disabled="frmLogin.$invalid", ng-click="doLogin()") ลงชื่อเข้าใช้งาน

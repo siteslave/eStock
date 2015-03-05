@@ -372,4 +372,70 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
         }
 
     };
+
+    /** Get orders status online **/
+    $scope.getOnline = function () {
+
+        OrdersService.getOnlineStatus()
+            .then(function (data) {
+                if (data.ok) {
+                    $scope.onlineOrders = data.rows;
+                } else {
+                    if (angular.isObject(data.msg)) {
+                        console.log(data.msg);
+                        LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log')
+                    } else {
+                        LxNotificationService.error(data.msg);
+                    }
+
+                }
+            }, function (err) {
+                console.log(err);
+            });
+
+    };
+
+    $scope.getStatusList = function () {
+        OrdersService.getStatusList()
+            .then(function (data) {
+                if (data.ok) {
+                    $scope.statusList = data.rows;
+                } else {
+                    if (angular.isObject(data.msg)) {
+                        console.log(data.msg);
+                        LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log')
+                    } else {
+                        LxNotificationService.error(data.msg);
+                    }
+                }
+            });
+    };
+
+    $scope.setStatus = function (data) {
+        $scope.statusData = data;
+    };
+
+    $scope.getOnlineDetail = function (id) {
+        LxProgressService.linear.show('#009688', '#progressOnline');
+
+        OrdersService.getOnlineDetail(id)
+            .then(function (data) {
+                if (data.ok) {
+                    $scope.productOnline = data.rows;
+                    LxProgressService.linear.hide();
+                    LxDialogService.open('mdlOnlineDetail');
+
+                } else {
+                    if (angular.isObject(data.msg)) {
+                        console.log(data.msg);
+                        LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log')
+                    } else {
+                        LxNotificationService.error(data.msg);
+                    }
+                }
+            });
+    };
+
+    $scope.getOnline();
+    $scope.getStatusList();
 });

@@ -87,8 +87,52 @@ block content
                             i.mdi.mdi-plus
 
             lx-tab(heading="ตรวจสอบสถานะเบิก (Online)")
-                | ดหกดหกดหดกหด
-                
+                div(flex-container="row")
+                    div(flex-item="12")
+                        | &nbsp;
+                        #progressOnline
+
+                div(flex-container="row", flex-gutter="24")
+                    div(flex-item="10")
+                        br
+                        br
+                        lx-text-field(label="ค้นหารายการเบิก", fixed-label="true", icon="magnify")
+                            input(type="text", ng-model="query")
+                    div(flex-item="2")
+                        lx-select(ng-model="status", placeholder="สถานะใบเบิก", choices="statusList", floating-label, selection-to-model="setStatus(data)")
+                            lx-select-selected {{ $selected.name }}
+                            lx-select-choices {{ $choice.name }}
+
+                .data-table-container
+                    table.data-table.data-table--has-secondary
+                        thead
+                            tr
+                                th วันที่
+                                th เลขที่ใบเบิก
+                                th จำนวน(รายการ)
+                                th ชื่อผู้เบิก
+                                th สถานะ
+                                th
+                            tr
+                                td(colspan="7").divider.divider--dark
+                        tbody
+                            tr(ng-repeat="o in onlineOrders").data-table__clickable-row
+                                td {{ o.orders_date | toShortDate }}
+                                td {{ o.orders_code }}
+                                td  {{ o.total_qty | number }}
+                                td {{ o.client_staff_name }}
+                                td {{ o.status_name }}
+                                td
+                                    lx-dropdown(position="right", from-top)
+                                        button.btn.btn--l.btn--grey.btn--icon(lx-ripple, lx-dropdown-toggle)
+                                            i.mdi.mdi-dots-vertical
+                                        lx-dropdown-menu
+                                            ul
+                                                li
+                                                    a(ng-click="getOnlineDetail(o.id)").dropdown-link
+                                                        i.mdi.mdi-desktop-mac
+                                                        | &nbsp; ดูรายละเอียด/นำเข้าข้อมูล
+
             lx-tab(heading="ตรวจสอบยอดคงเหลือ (Online)")
                 | ssssss
 
@@ -199,3 +243,61 @@ block content
                 button.btn.btn--m.btn--blue.btn--raised(lx-ripple, ng-click="doSaveOrder()") Save
                 | &nbsp;
                 button.btn.btn--m.btn--red.btn--raised(lx-ripple, lx-dialog-close) Close
+
+        lx-dialog#mdlOnlineDetail.dialog.dialog--l(onclose="closingOnlineDetail()")
+            .dialog__header
+                .toolbar.bgc-teal-500
+                    span.toolbar__label.tc-white.fs-title
+                        | ข้อมูลการอนุมัติเวชภัณฑ์
+
+                    .toolbar__right
+                        button.btn.btn--l.btn--white.btn--icon(lx-ripple, lx-dialog-close)
+                            i.mdi.mdi-close
+            .dialog__content
+                .card
+                    div(class="p+")
+                        span.fs-title
+                            i.icon.icon--s.icon--grey.icon--flat.mdi.mdi-shopping
+                            | &nbsp;รายละเอียดการอนุมัติเวชภัณฑ์
+
+                        .data-table-container
+                            table.data-table.data-table--has-secondary
+                                thead
+                                    tr
+                                        th #
+                                        th รหัส
+                                        th รายการ
+                                        th ซื้อ
+                                        th ขาย
+                                        th Lot
+                                        th เบิก
+                                        th อนุมัติ
+                                        th
+                                    tr
+                                        td(colspan="9").divider.divider--dark
+                                tbody
+                                    tr(ng-repeat="p in productOnline").data-table__clickable-row
+                                        td {{ $index+1 }}
+                                        td {{ p.code }}
+                                        td {{ p.product_name }}
+                                        td {{ p.price | number }}
+                                        td {{ p.cost | number }}
+                                        td {{ p.lot_name }}
+                                        td
+                                            strong {{ p.qty | number }}
+                                        td
+                                            strong {{ p.approve_qty | number }}
+                                        td
+                                            lx-dropdown(position="right", from-top)
+                                                button.btn.btn--l.btn--grey.btn--icon(lx-ripple, lx-dropdown-toggle)
+                                                    i.mdi.mdi-dots-vertical
+                                                lx-dropdown-menu
+                                                    ul
+                                                        li
+                                                            a.dropdown-link
+                                                                i.mdi.mdi-close
+                                                                | &nbsp;Remove
+            .dialog__actions
+                button.btn.btn--m.btn--green.btn--raised(lx-ripple) นำเข้าข้อมูล
+                | &nbsp;
+                button.btn.btn--m.btn--grey.btn--raised(lx-ripple, lx-dialog-close) ปิดหน้าต่าง

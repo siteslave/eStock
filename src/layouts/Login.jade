@@ -1,0 +1,54 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="utf-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1")
+
+        title eStock (Drug inventory system for PCU)
+
+        link(href="../../vendor/lumx/dist/lumx.css", rel="stylesheet")
+        link(href="../../vendor/mdi/css/materialdesignicons.css", rel="stylesheet")
+        link(href="../css/app.css", rel="stylesheet")
+        link(rel="stylesheet", href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700")
+
+    body(ng-app="App")
+
+        .toolbar.bgc-teal-500(ng-controller="ToolbarController")
+            .toolbar__left.mr
+                button.btn.btn--l.btn--white.btn--icon(lx-ripple)
+                    i.mdi.mdi-shopping
+            span(style="color: #fff;").toolbar__label.fs-title
+                | Drug inventory system
+
+            .toolbar__right
+
+                lx-dropdown(position="right", over-toggle="true")
+                    button.btn.btn--white.btn--l.btn--icon(lx-ripple, lx-dropdown-toggle)
+                        i.mdi.mdi-dots-vertical
+                    lx-dropdown-menu
+                        ul
+                            li
+                                a.dropdown-link.dropdown-link--is-header Tools
+                            li
+                                a(href="../connection/Connection.html").dropdown-link Connection setting
+                            li.dropdown-divider
+                            li
+                                a(ng-click="exitApplication()").dropdown-link Exit program
+
+        div(flex-container="column", flex-align="space-between center")
+            div(flex-item="6")
+                .card(class="p+")
+                    block content
+
+        script(src="../../vendor/jquery/dist/jquery.min.js")
+        script(src="../../vendor/velocity/velocity.min.js")
+        script(src="../../vendor/moment/min/moment-with-locales.min.js")
+        script(src="../../vendor/angular/angular.js")
+        script(src="../../vendor/angular-route/angular-route.js")
+        script(src="../../vendor/lumx/dist/lumx.min.js")
+
+        script(src="../app.js")
+        script(src="../common/Common.js")
+        //- Application scripts
+        block scripts

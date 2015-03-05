@@ -39,21 +39,30 @@ html(lang="en")
                             li
                                 a.dropdown-link.dropdown-link--is-header Tools
                             li
-                                a(href="").dropdown-link Change password
+                                a(href="").dropdown-link
+                                    i.mdi.mdi-key
+                                    | &nbsp; Change password
                             li
-                                a(href="../connection/Connection.html").dropdown-link Connection setting
+                                a(href="../connection/Connection.html").dropdown-link
+                                    i.mdi.mdi-settings-box
+                                    | &nbsp; Connection setting
                             li.dropdown-divider
                             li
-                                a(ng-click="exitApplication()").dropdown-link Exit program
+                                a(ng-click="logout()").dropdown-link
+                                    i.mdi.mdi-logout
+                                    | &nbsp; Logout
+                            li
+                                a(ng-click="exitApplication()").dropdown-link
+                                    i.mdi.mdi-power
+                                    | &nbsp; Exit program
 
         div(flex-container="row", flex-gutter="24")
             div(flex-item="3")
-                .card(style="min-height: 538px;"
-                )
+                .card(style="min-height: 538px;")
                     ul.list(class="mt++")
                         li.list-row.list-row--has-separator
                             .list-row__primary
-                                a(href="/")
+                                a(href="../pages/Index.html")
                                     i.icon.icon--l.icon--teal.icon--circled.mdi.mdi-home
                             .list-row__content
                                 span.display-block Home

@@ -52,7 +52,7 @@ eStock.exit = function () {
 // Main application module.
 App = angular.module('App', ['lumx', 'ngRoute']);
 
-App.controller('ToolbarController', function ($scope, LxNotificationService) {
+App.controller('ToolbarController', function ($scope, $window, LxNotificationService) {
     $scope.exitApplication = function () {
 
         LxNotificationService.confirm('Exit program', 'Are you sure?', {
@@ -60,6 +60,13 @@ App.controller('ToolbarController', function ($scope, LxNotificationService) {
             cancel: 'No'
         }, function (res) {
             if (res) {
+                /* Remove session */
+                $window.sessionStorage.removeItem('username');
+                $window.sessionStorage.removeItem('startDate');
+                $window.sessionStorage.removeItem('endDate');
+                $window.sessionStorage.removeItem('isAdmin');
+                $window.sessionStorage.removeItem('subStockId');
+                /* Exit application */
                 eStock.exit();
             }
         });
@@ -77,4 +84,18 @@ App.controller('ToolbarController', function ($scope, LxNotificationService) {
     $scope.minimizedWindow = function () {
         win.minimize();
     };
+    /**
+     * Logout
+     */
+    $scope.logout = function () {
+        /* Remove session */
+        $window.sessionStorage.removeItem('username');
+        $window.sessionStorage.removeItem('startDate');
+        $window.sessionStorage.removeItem('endDate');
+        $window.sessionStorage.removeItem('isAdmin');
+        $window.sessionStorage.removeItem('subStockId');
+        /* Redirect to login page */
+        $window.location.href = '../login/Login.html';
+    };
+
 });

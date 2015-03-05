@@ -1,4 +1,8 @@
 extends ../layouts/Main
 
+block scripts
+    script(src="IndexController.js")
+
 block content
-    | Hello
+    div(ng-controller="IndexController")
+        | Hello
