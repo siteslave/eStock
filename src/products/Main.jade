@@ -75,7 +75,7 @@ lx-dialog.dialog.dialog--l(onclose="closingDialog()")#mdlMapping
                 div(flex-item)
                     lx-select(ng-model="ajax.selected", placeholder="เลือกรายการเวชภัณฑ์",
                     choices="ajax.list", filter="ajax.update(newValue, oldValue)",
-                    loading="{{ ajax.loading }}", min-lenght="2", allow-clear="true", floating-label)
+                    loading="{{ ajax.loading }}", min-length="2", allow-clear="true", floating-label)
                         lx-select-selected [{{$selected.icode}}] {{ $selected.name }}
                         lx-select-choices {{ $choice.name }}
     .dialog__actions

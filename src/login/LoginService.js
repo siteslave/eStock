@@ -28,8 +28,6 @@ App.factory('LoginService', function ($q, Common) {
                 .where('password', md5(password))
                 .limit(1)
                 .exec(function (err, rows) {
-                    console.log(rows);
-
                     if (err) q.reject(err);
                     else q.resolve(rows[0]);
                 });

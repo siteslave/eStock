@@ -383,7 +383,7 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
                 } else {
                     if (angular.isObject(data.msg)) {
                         console.log(data.msg);
-                        LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log')
+                        LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log');
                     } else {
                         LxNotificationService.error(data.msg);
                     }
@@ -403,7 +403,7 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
                 } else {
                     if (angular.isObject(data.msg)) {
                         console.log(data.msg);
-                        LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log')
+                        LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log');
                     } else {
                         LxNotificationService.error(data.msg);
                     }
@@ -416,6 +416,7 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
     };
 
     $scope.getOnlineDetail = function (id) {
+
         LxProgressService.linear.show('#009688', '#progressOnline');
 
         OrdersService.getOnlineDetail(id)
@@ -428,7 +429,7 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
                 } else {
                     if (angular.isObject(data.msg)) {
                         console.log(data.msg);
-                        LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log')
+                        LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log');
                     } else {
                         LxNotificationService.error(data.msg);
                     }
@@ -438,4 +439,5 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
 
     $scope.getOnline();
     $scope.getStatusList();
+
 });
