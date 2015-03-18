@@ -7,6 +7,9 @@ var path = require('path'),
     _ = require('lodash'),
     win = gui.Window.get();
 
+var Q = require('q');
+require('q-foreach')(Q);
+
 jf.spaces = 2;
 // Global namespace.
 var eStock = {};

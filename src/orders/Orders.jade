@@ -10,7 +10,7 @@ block content
             lx-tab(heading="รายการเบิกเวชภัณฑ์")
                 br
                 div(flex-container="row")
-                    div(flex-item="6")
+                    div(flex-item="5")
                         lx-text-field(label="ระบุเลขที่ใบเบิก", fixed-label="true", icon="magnify")
                             input(type="text", ng-model="query")
                     div(flex-item="1")
@@ -18,10 +18,14 @@ block content
                         | &nbsp;    
                     div(flex-item="1")
                         | &nbsp;
-                    div(flex-item="4")
+                    div(flex-item="3")
                             input(type="checkbox", ng-model="all", ng-change="toggleList()")#switch.switch__input
                             label(for="switch").switch__label ส่งเบิกแล้ว
                             span.switch__help แสดงรายการที่ส่งเบิกแล้ว
+                    div(flex-item="2")
+                        br
+                        button(ng-click="getOrdersList()").btn.btn--l.btn--green.btn--raised Refresh
+
                 div(flex-container="row")
                     div(flex-item="12")
                         | &nbsp;
@@ -93,16 +97,18 @@ block content
                         #progressOnline
 
                 div(flex-container="row", flex-gutter="24")
-                    div(flex-item="10")
+                    div(flex-item="8")
                         br
                         br
                         lx-text-field(label="ค้นหารายการเบิก", fixed-label="true", icon="magnify")
-                            input(type="text", ng-model="query")
+                            input(type="text", ng-model="queryOnline")
                     div(flex-item="2")
                         lx-select(ng-model="status", placeholder="สถานะใบเบิก", choices="statusList", floating-label, selection-to-model="setStatus(data)")
                             lx-select-selected {{ $selected.name }}
                             lx-select-choices {{ $choice.name }}
-
+                    div(flex-item="2")
+                        br
+                        button(ng-click="getOnline()").btn.btn--l.btn--green.btn--raised Refresh
                 .data-table-container
                     table.data-table.data-table--has-secondary
                         thead
@@ -116,7 +122,7 @@ block content
                             tr
                                 td(colspan="7").divider.divider--dark
                         tbody
-                            tr(ng-repeat="o in onlineOrders").data-table__clickable-row
+                            tr(ng-repeat="o in onlineOrders | filter: queryOnline").data-table__clickable-row
                                 td {{ o.orders_date | toShortDate }}
                                 td {{ o.orders_code }}
                                 td  {{ o.total_qty | number }}
@@ -128,10 +134,14 @@ block content
                                             i.mdi.mdi-dots-vertical
                                         lx-dropdown-menu
                                             ul
-                                                li
+                                                li(ng-if="o.approved_date")
                                                     a(ng-click="getOnlineDetail(o.id)").dropdown-link
                                                         i.mdi.mdi-desktop-mac
                                                         | &nbsp; ดูรายละเอียด/นำเข้าข้อมูล
+                                                li(ng-if="!o.approved_date")
+                                                    a(ng-click="cancelOrder(o.orders_code)").dropdown-link
+                                                        i.mdi.mdi-recycle
+                                                        | &nbsp; ยกเลิกรายการเบิก
 
             lx-tab(heading="ตรวจสอบยอดคงเหลือ (Online)")
                 | ssssss
@@ -259,6 +269,13 @@ block content
                         span.fs-title
                             i.icon.icon--s.icon--grey.icon--flat.mdi.mdi-shopping
                             | &nbsp;รายละเอียดการอนุมัติเวชภัณฑ์
+                        div(flex-container="row", flex-gutter="24")
+                            div(flex-item="3")
+                                lx-text-field(label="วันที่อนุมัติ")
+                                    input(type="text", ng-model="approved_date", ng-disabled="true")
+                            div(flex-item="9")
+                                lx-text-field(label="อนุมัติโดย")
+                                    input(type="text", ng-model="approved_by", ng-disabled="true")
 
                         .data-table-container
                             table.data-table.data-table--has-secondary
@@ -298,6 +315,6 @@ block content
                                                                 i.mdi.mdi-close
                                                                 | &nbsp;Remove
             .dialog__actions
-                button.btn.btn--m.btn--green.btn--raised(lx-ripple) นำเข้าข้อมูล
+                button.btn.btn--m.btn--green.btn--raised(lx-ripple, ng-click="doImport()") นำเข้าข้อมูล
                 | &nbsp;
                 button.btn.btn--m.btn--grey.btn--raised(lx-ripple, lx-dialog-close) ปิดหน้าต่าง

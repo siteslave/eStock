@@ -1,5 +1,6 @@
 // Order controller
-App.controller('OrdersController', function($scope, OrdersService, LxNotificationService,
+
+App.controller('OrdersController', function($scope, $filter, OrdersService, LxNotificationService,
     LxDialogService, LxProgressService) {
 
     $scope.showAddItemForm = false;
@@ -43,13 +44,10 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
         selected: null,
         toModel: function(data, callback)
         {
-            if (data)
-            {
-                callback(data);
-            }
-            else
-            {
+            if (!data) {
                 callback();
+            } else {
+                callback(data);
             }
         }
     };
@@ -60,13 +58,10 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
         selected: null,
         toModel: function(data, callback)
         {
-            if (data)
-            {
-                callback(data);
-            }
-            else
-            {
+            if (!data) {
                 callback();
+            } else {
+                callback(data);
             }
         }
     };
@@ -176,19 +171,24 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
                             return OrdersService.updateOrder($scope.orderId, orders);
                         })
                         .then(function() {
-                            _.forEach(orders.items, function(v) {
+                            Q.forEach(orders.items, function(v) {
+                                var defer = Q.defer();
                                 OrdersService.doSaveOrderDetail($scope.orderId, v)
                                     .then(function() {
-                                        // Success
+                                        defer.resolve();
                                     }, function(err) {
+                                        defer.reject();
                                         console.log(err);
                                     });
+
+                                return defer.promise;
+                            }).then(function () {
+                                LxNotificationService.success("บันทึกรายการเสร็จเรียบร้อยแล้ว");
+                                LxDialogService.close('mdlNewOrder');
+
+                                $scope.getOrdersList();
+                                $scope.getOnline();
                             });
-
-                            LxNotificationService.success("บันทึกรายการเสร็จเรียบร้อยแล้ว");
-                            LxDialogService.close('mdlNewOrder');
-
-                            $scope.getOrdersList();
 
                         }, function(err) {
                             console.log(err);
@@ -199,19 +199,25 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
                     OrdersService.doSaveOrders(orders)
                         .then(function(id) {
                             // Save order detail
-                            _.forEach(orders.items, function(v) {
+                            Q.forEach(orders.items, function(v) {
+                                var defer = Q.defer();
+
                                 OrdersService.doSaveOrderDetail(id, v)
                                     .then(function() {
-                                        // Success
+                                        defer.resolve();
                                     }, function(err) {
+                                        defer.reject(err);
                                         console.log(err);
                                     });
+
+                                return defer.promise;
+
+                            }).then(function () {
+                                LxNotificationService.success("บันทึกรายการเสร็จเรียบร้อยแล้ว");
+                                LxDialogService.close('mdlNewOrder');
+
+                                $scope.getOrdersList();
                             });
-
-                            LxNotificationService.success("บันทึกรายการเสร็จเรียบร้อยแล้ว");
-                            LxDialogService.close('mdlNewOrder');
-
-                            $scope.getOrdersList();
 
                         }, function(err) {
                             console.log(err);
@@ -376,21 +382,28 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
     /** Get orders status online **/
     $scope.getOnline = function () {
 
+        LxProgressService.linear.show('#009688', '#progressOnline');
+
         OrdersService.getOnlineStatus()
             .then(function (data) {
                 if (data.ok) {
                     $scope.onlineOrders = data.rows;
+                    LxProgressService.linear.hide();
                 } else {
                     if (angular.isObject(data.msg)) {
                         console.log(data.msg);
                         LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log');
+                        LxProgressService.linear.hide();
                     } else {
                         LxNotificationService.error(data.msg);
+                        LxProgressService.linear.hide();
                     }
 
                 }
             }, function (err) {
+                LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log');
                 console.log(err);
+                LxProgressService.linear.hide();
             });
 
     };
@@ -422,7 +435,12 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
         OrdersService.getOnlineDetail(id)
             .then(function (data) {
                 if (data.ok) {
-                    $scope.productOnline = data.rows;
+                    $scope.productOnline = data.products;
+                    $scope.orderOnlineDetail = data.orders;
+
+                    $scope.approved_date = $filter('toShortDate')(data.orders.created_at);
+                    $scope.approved_by = data.orders.master_staff_name;
+
                     LxProgressService.linear.hide();
                     LxDialogService.open('mdlOnlineDetail');
 
@@ -435,6 +453,92 @@ App.controller('OrdersController', function($scope, OrdersService, LxNotificatio
                     }
                 }
             });
+    };
+
+    /**
+     * Import data
+     */
+    $scope.doImport = function () {
+        LxNotificationService.confirm('ยืนยันการนำเข้า', 'คุณต้องการนำเข้าข้อมูลหรือไม่?', {
+            ok: 'ใช่, ฉันต้องการนำเข้า',
+            cancel: 'ยกเลิก'
+        }, function (res) {
+            if (res) {
+                OrdersService.isImported($scope.orderOnlineDetail.orders_code)
+                    .then(function (isExist) {
+                        if (isExist) {
+                            LxNotificationService.warning('รายการนี้ได้ถูกนำเข้าข้อมูลแล้ว ไม่สามารถนำเข้าได้อีก');
+                        } else {
+                            var promise = OrdersService.updateOrderImportStatus($scope.orderOnlineDetail.orders_code);
+                            promise.then(function () {
+                                return OrdersService.saveReceivedOrder($scope.orderOnlineDetail);
+                            }).then(function (id) {
+
+                                Q.forEach($scope.productOnline, function (v) {
+
+                                    var defer = Q.defer();
+                                    OrdersService.saveReceiveOrderDetail(v, id)
+                                        .then(function () {
+                                            defer.resolve();
+                                        });
+
+                                    return defer.promise;
+
+                                }).then(function () {
+                                    LxNotificationService.success('นำเข้ารายการเสร็จเรียบร้อยแล้ว');
+                                    LxDialogService.close('mdlOnlineDetail');
+                                });
+
+                            }, function (err) {
+                                console.log(err);
+                                LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log');
+                            });
+                        }
+                    });
+            }
+        });
+    };
+
+    // close online order detail
+    $scope.closingOnlineDetail = function () {
+        $scope.productOnline = null;
+        $scope.orderOnlineDetail = null;
+    };
+
+    // Cancel orders online
+    $scope.cancelOrder = function (ordersCode) {
+        LxNotificationService.confirm('ยืนยันการยกเลิก', 'คุณต้องการยกเลิกรายการนี้ ใช่หรือไม่?', {
+            ok: 'ใช่, ฉันต้องการยกเลิก',
+            cancel: 'ไม่ใช่'
+        }, function (res) {
+            if (res) {
+                OrdersService.doCancelOnline(ordersCode)
+                    .then(function (data) {
+                        if (data.ok) {
+                            // update send online
+                            OrdersService.doCancelOnlineStatus(ordersCode)
+                                .then(function () {
+                                    LxNotificationService.success('ยกเลิกรายการเสร็จเรียบร้อยแล้ว');
+                                    $scope.getOnline();
+                                }, function (err) {
+                                    LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log');
+                                    console.log(err);
+                                });
+
+                        } else {
+                            if (angular.isObject(data.msg)) {
+                                console.log(data.msg);
+                                LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log');
+                            } else {
+                                LxNotificationService.error(data.msg);
+                            }
+                        }
+                    }, function (err) {
+                        console.log(err);
+                        LxNotificationService.error('เกิดข้อผิดพลาดกรุณาดู log');
+                    });
+            }
+        });
     };
 
     $scope.getOnline();

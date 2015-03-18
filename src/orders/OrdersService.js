@@ -1,5 +1,5 @@
 // Order services
-App.factory('OrdersService', function($q, $http, Common) {
+App.factory('OrdersService', function($q, $http, $window, Common) {
 
     var db = Common.getConnection(),
         config = Common.getConfigure();
@@ -185,9 +185,9 @@ App.factory('OrdersService', function($q, $http, Common) {
             var q = $q.defer();
 
             var options = {
-                method: 'GET',
-                url: config.dc.url + '/orders/save',
-                params: {
+                method: 'POST',
+                url: config.dc.url + '/api/orders/save',
+                data: {
                     hospcode: config.dc.hospcode,
                     key: config.dc.private_key,
                     orders: orders
@@ -292,6 +292,32 @@ App.factory('OrdersService', function($q, $http, Common) {
             return q.promise;
         },
 
+
+        /* Cancel send online */
+        doCancelOnline: function (orderCode) {
+            var q = $q.defer();
+
+            var options = {
+                method: 'POST',
+                url: config.dc.url + '/api/orders/cancel',
+                data: {
+                    order_code: orderCode,
+                    hospcode: config.dc.hospcode,
+                    key: config.dc.private_key
+                }
+            };
+
+            $http(options)
+                .success(function(data) {
+                    q.resolve(data);
+                })
+                .error(function() {
+                    q.reject('Internet connection failed.');
+                });
+
+            return q.promise;
+        },
+
         /* Get order detail */
         getOnlineDetail: function (id) {
             var q = $q.defer();
@@ -312,6 +338,99 @@ App.factory('OrdersService', function($q, $http, Common) {
                 })
                 .error(function() {
                     q.reject('Internet connection failed.');
+                });
+
+            return q.promise;
+        },
+
+        /** Save receive order **/
+        saveReceivedOrder: function (orders) {
+            var q = $q.defer();
+
+            db('received_orders')
+                .insert({
+                    orders_code: orders.orders_code,
+                    imported_by: $window.sessionStorage.getItem('username'),
+                    approved_date: moment(orders.created_at).format('YYYY-MM-DD'),
+                    approved_by: orders.master_staff_name,
+                    created_at: moment().format('YYYY-MM-DD HH:mm:ss')
+                })
+                .returning('id')
+                .exec(function (err, rows) {
+                    if (err) q.reject(err);
+                    else q.resolve(rows[0]);
+                });
+
+            return q.promise;
+        },
+
+        saveReceiveOrderDetail: function (v, id) {
+
+            var q = $q.defer();
+
+            db('received_orders_detail')
+                .insert({
+                    product_code: v.product_code,
+                    cost: v.cost,
+                    price: v.price,
+                    request_qty: v.qty,
+                    approved_qty: v.approve_qty,
+                    received_orders_id: id,
+                    stdcode: v.stdcode,
+                    lots: v.lot_name,
+                    created_at: moment().format('YYYY-MM-DD HH:mm:ss')
+                })
+                .exec(function (err) {
+                    if (err) q.reject(err);
+                    else q.resolve();
+                });
+
+            return q.promise;
+        },
+
+        updateOrderImportStatus: function (ordersCode) {
+            var q = $q.defer();
+
+            db('orders')
+                .where('orders_code', ordersCode)
+                .update('is_imported', 'Y')
+                .exec(function (err) {
+                    if (err) q.reject(err);
+                    else q.resolve();
+                });
+
+            return q.promise;
+        },
+
+        isImported: function (orderCode) {
+            var q = $q.defer();
+
+            db('received_orders')
+                .count('* as total')
+                .where('orders_code', orderCode)
+                .exec(function (err, rows) {
+                    if (err) q.reject(err);
+                    else {
+                        var isExist = rows[0].total > 0;
+                        q.resolve(isExist);
+                    }
+                });
+
+            return q.promise;
+        },
+
+        doCancelOnlineStatus: function (orderCode) {
+            var q = $q.defer();
+
+            db('orders')
+                .where('orders_code', orderCode)
+                .update({
+                    is_sent: 'N',
+                    sent_at: null
+                })
+                .exec(function (err) {
+                    if (err) q.reject(err);
+                    else q.resolve();
                 });
 
             return q.promise;
