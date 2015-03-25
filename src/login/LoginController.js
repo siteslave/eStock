@@ -33,8 +33,14 @@ App.controller('LoginController', function ($scope, $window, LoginService, LxNot
                     $window.sessionStorage.setItem('endDate', endDate);
                     $window.sessionStorage.setItem('isAdmin', data.is_admin);
                     $window.sessionStorage.setItem('subStockId', data.sub_stock_id);
+                    $window.sessionStorage.setItem('canImport', data.can_import_data);
                     // Redirect to main page
-                    $window.location.href = '../pages/Index.html';
+                    if (data.is_admin == 'Y') {
+                        $window.location.href = '../pages/Index.html';
+                    } else {
+                        $window.location.href = '../clients/pages/Index.html';
+                    }
+
                 } else {
                     LxNotificationService.warning('ชื่อผู้ใช้งาน หรือ รหัสผ่านไม่ถูกต้อง');
                 }
