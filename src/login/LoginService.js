@@ -1,7 +1,7 @@
 App.factory('LoginService', function ($q, Common) {
 
     var db = Common.getConnection();
-    var md5 = require('MD5');
+    var crypto = require('crypto');
 
     return {
         getPeriods: function () {
@@ -22,10 +22,11 @@ App.factory('LoginService', function ($q, Common) {
 
         doLogin: function (username, password) {
             var q = $q.defer();
+            var encryptPass = crypto.createHash('md5').update(password).digest('hex');
 
             db('users')
                 .where('username', username)
-                .where('password', md5(password))
+                .where('password', encryptPass)
                 .limit(1)
                 .exec(function (err, rows) {
                     if (err) q.reject(err);

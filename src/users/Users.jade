@@ -1,0 +1,100 @@
+//- Users
+
+extends ../layouts/Main
+
+block scripts
+    script(src="UsersController.js")
+    script(src="UsersService.js")
+
+block content
+    .fs-title
+        i.icon.icon--l.icon--circled.icon--green.mdi.mdi-account-network
+        | &nbsp; รายชื่อผู้ใช้งานระบบ
+    div(ng-controller="UsersController")
+
+        .data-table-container
+            table.data-table.data-table--has-secondary
+                thead
+                    tr
+                        th #
+                        th ชื่อผู้ใช้งาน
+                        th ชื่อ - สกุล
+                        th ผู้ดูแลระบบ
+                        th ใช้งาน
+                        th ใช้งานล่าสุด
+                        th
+                    tr
+                        td(colspan="7").divider.divider--dark
+
+                tbody
+                    tr(ng-repeat="u in users").data-table__clickable-row
+                        td {{ $index + 1 }}
+                        td {{ u.username }}
+                        td {{ u.fullname }}
+                        td(ng-if="u.is_admin == 'Y'")
+                            i.icon.icon--s.icon--flat.icon--green.mdi.mdi-checkbox-marked-circle
+                        td(ng-if="u.is_admin == 'N'")
+                            i.icon.icon--s.icon--flat.icon--grey.mdi.mdi-checkbox-blank-circle-outline
+                         td(ng-if="u.is_active == 'Y'")
+                            i.icon.icon--s.icon--flat.icon--green.mdi.mdi-checkbox-marked-circle
+                        td(ng-if="u.is_active == 'N'")
+                            i.icon.icon--s.icon--flat.icon--grey.mdi.mdi-checkbox-blank-circle-outline
+                        td {{ u.last_login | toDateTime }}
+                        td
+                            lx-dropdown(position="right", from-top)
+                                button(lx-dropdown-toggle, lx-ripple).btn.btn--l.btn--grey.btn--icon
+                                    i.mdi.mdi-dots-vertical
+                                lx-dropdown-menu
+                                    ul
+                                        li
+                                            a(ng-click="showEdit(u)").dropdown-link
+                                                i.mdi.mdi-pencil
+                                                | &nbsp; แก้ไข
+                                        li
+                                            a(ng-click="showChangePass(u)").dropdown-link
+                                                i.mdi.mdi-key
+                                                | &nbsp; เปลี่ยนรหัสผ่าน
+            br
+            div(flex-container="row")
+                div(flex-item="11")
+                    | &nbsp;
+                div(flex-item="1")
+                    button(lx-ripple, ng-click="showNew()").btn.btn--l.btn--red.btn--fab
+                        i.mdi.mdi-plus
+
+            lx-dialog.dialog.dialog--l#mdlNew(onclose="closingDialog()")
+                .dialog__header
+                    .toolbar.bgc-light-blue-500(class="p++")
+                        span.toolbar__label.tc-white.fs-title
+                            | เพิ่ม/แก้ไขผู้ใช้งาน
+                        .toolbar__right
+                            button.btn.btn--l.btn--white.btn--icon(lx-ripple, lx-dialog-close)
+                                i.mdi.mdi-close
+                .dialog__content
+                    div(class="p+")
+                        .fs-title.display-block ข้อมูลผู้ใช้งาน
+                        form(name="frmNew")
+                            div(flex-container="rows", flex-gutter="24")
+                                div(flex-item="6")
+                                    lx-text-field(label="ชื่อ - สกุล")
+                                        input(type="text", ng-model="fullname", ng-required="true")
+                                div(flex-item="6")
+                                    lx-text-field(label="ชื่อผู้ใช้งาน")
+                                        input(type="text", ng-model="username", ng-required="true", ng-disabled="isUpdate")
+                                div(flex-item="6")
+                                    lx-text-field(label="รหัสผ่าน", ng-hide="isUpdate")
+                                        input(type="password", ng-model="password", ng-required="true")
+                            div(flex-container="row", flex-gutter="24")
+                                div(flex-item="3")
+                                    .checkbox
+                                        input(type="checkbox", ng-model="isAdmin").checkbox__input#isAdmin
+                                        label(for="isAdmin").checkbox__label ผู้ดูแลระบบ
+                                div(flex-item="3")
+                                    .checkbox
+                                        input(type="checkbox", ng-model="isActive").checkbox__input#isActive
+                                        label(for="isActive").checkbox__label เปิดใช้งาน
+
+                .dialog__actions
+                    button(ng-click="save()", ng-disabled="frmNew.$invalid").btn.btn--l.btn--green.btn--raised Save
+                    | &nbsp;
+                    button(lx-dialog-close).btn.btn--l.btn--grey.btn--raised Close

@@ -16,3 +16,13 @@ App.filter('toShortDate', function () {
     };
     
 });
+
+App.filter('toDateTime', function () {
+    return function (dt) {
+        if (moment(dt).isValid()) {
+            return moment(dt).format('LLL');
+        } else {
+            return '-';
+        }
+    };
+});
