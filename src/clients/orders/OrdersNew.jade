@@ -1,0 +1,103 @@
+.fs-headline
+    i.icon.icon--l.icon--circled.icon--green.mdi.mdi-shopping
+    | &nbsp; บันทึกเบิกเวชภัณฑ์จากคลังหลัก
+
+div(flex-container="row", flex-gutter="24")
+    div(flex-item="3")
+        lx-text-field(label="เลขที่เอกสาร")
+            input(type="text", ng-model="orders_code")
+
+    div(flex-item="3")
+        lx-date-picker(locale="th", label="วันที่", model="orders_date")
+br
+br
+.fs-title
+    i.icon.icon--s.icon--flat.icon--grey.mdi.mdi-view-list
+    | &nbsp; รายการเวชภัณฑ์ที่เบิก
+
+.data-table-container
+    table.data-table.data-table--has-primary
+        thead
+            tr
+                th #
+                th รหัส
+                th รายการ
+                th ราคา
+                th จำนวน
+                th รวม
+                th
+            tr
+                td(colspan="7").divider.divider--dark
+        tbody
+            tr(ng-repeat="d in drugs").data-table__clickable-row
+                td {{ $index+1 }}
+                td {{ d.code }}
+                td {{ d.name }}
+                td {{ d.price | number }}
+                td {{ d.qty | number }}
+                td {{ d.price * d.qty | number }}
+                td
+                    lx-dropdown(position="right", from-top)
+                        button(lx-dropdown-toggle).btn.btn--l.btn--icon.btn--grey
+                            i.mdi.mdi-dots-vertical
+                        lx-dropdown-menu
+                            ul
+                                li
+                                    a(ng-click="doRemove(d.code)").dropdown-link
+                                        i.mdi.mdi-close
+                                        | &nbsp; ลบรายการ
+br
+div(flex-container="row")
+    div(flex-item="10")
+        | &nbsp;
+    div(flex-item="2")
+        button(ng-click="showNew()", lx-ripple).btn.btn--m.btn--green.btn--fab
+            i.mdi.mdi-plus
+
+br
+br
+div(flex-container="column", flex-align="space-between center")
+    div(flex-item="10")
+        | &nbsp;
+    div(flex-item="2")
+        button(lx-ripple).btn.btn--l.btn--green.btn--raised บันทึกข้อมูล
+        | &nbsp;
+        button(lx-ripple).btn.btn--l.btn--red.btn--raised ยกเลิกรายการ
+
+
+lx-dialog.dialog.dialog--l#mdlNew(onclose="closingDialog()")
+    .dialog__header
+        .toolbar.bgc-blue-grey-500
+            span.toolbar__label.tc-white.fs-title
+                | เพิ่มรายการเวชภัณฑ์
+            .toolbar__right
+                button.btn.btn--l.btn--white.btn--icon(lx-ripple, lx-dialog-close)
+                    i.mdi.mdi-close
+    .dialog__content
+        .card
+            div(class="p+")
+                div(flex-container="row", flex-gutter="24", class="mt++")
+                    div(flex-item)
+                        lx-text-field(label="...", fixed-label="true", icon="magnify")
+                            input(type="text", ng-model="query")
+                .data-data-table-container
+                    table.data-table.data-data-table--has-secondary
+                        thead
+                            tr
+                                th รหัส
+                                th รายการ
+                                th หน่วย
+                                th ราคา
+                                th
+                            tr
+                                td(colspan="5").divider.divider--dark
+                        tbody
+                            tr(ng-repeat="p in products | filter: query").data-table__clickable-row
+                                td {{p.code}}
+                                td {{p.name}}
+                                td {{p.units}}
+                                td {{p.cost | currency}}
+                                td
+                                    button.btn.btn--m.btn--flat.btn--green(lx-ripple, ng-click="addItem(p.code)", ng-disabled="p.added == 'Y'") Add
+    .dialog__actions
+        button.btn.btn--m.btn--red.btn--raised(lx-ripple, lx-dialog-close) Close

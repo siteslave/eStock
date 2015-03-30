@@ -1,0 +1,82 @@
+.fs-headline
+    i.icon.icon--l.icon--circled.icon--green.mdi.mdi-shopping
+    | &nbsp; รายการเบิกจากคลังหลัก
+
+.data-table-container
+    table.data-table.data-table--has-secondary
+        thead
+            tr
+                th #
+                th เลขที่เอกสาร
+                th จำนวน
+                th ราคา
+                th สถานะ
+                th
+            tr
+                td(colspan="6").divider.divider--dark
+
+        tbody
+            tr(ng-repeat="o in orders").data-table__clickable-row
+                td {{ $index+1 }}
+                td {{ o.code }}
+                td {{ o.totalQty | number }}
+                td {{ o.totalPrice | number }}
+                td {{ o.orders_status }}
+                td
+                    lx-dropdown(position="right", from-top)
+                        button(lx-dropdown-toggle).btn.btn--l.btn--icon.btn--grey
+                            i.mdi.mdi-dots-vertical
+
+                        lx-dropdown-menu
+                            ul
+                                li
+                                    a.dropdown-link XXXX
+
+    br
+    div(flex-container="row")
+        div(flex-item="11")
+            | &nbsp;
+        div(flex-item="1")
+            a(href="#/orders/new", lx-ripple).btn.btn--l.btn--red.btn--fab
+                i.mdi.mdi-plus
+
+lx-dialog.dialog.dialog--l#mdlNew(onclose="closingDialog()")
+    .dialog__header
+        .toolbar.bgc-light-blue-500
+            span.toolbar__label.tc-white.fs-title
+                | เพิ่มรายการเวชภัณฑ์
+            .toolbar__right
+                button.btn.btn--l.btn--white.btn--icon(lx-ripple, lx-dialog-close)
+                    i.mdi.mdi-close
+
+    .dialog__content
+        .card
+            div(class="p+")
+                div(flex-container="row", flex-gutter="24", class="mt++")
+                    div(flex-item)
+                        lx-text-field(label="...", fixed-label="true", icon="magnify")
+                            input(type="text", ng-model="query")
+
+                .data-data-table-container
+                    table.data-table.data-data-table--has-secondary
+                        thead
+                            tr
+                                th รหัส
+                                th รายการ
+                                th หน่วย
+                                th ราคา
+                                th
+                            tr
+                                td(colspan="5").divider.divider--dark
+                        tbody
+                            tr(ng-repeat="p in products | filter: query")
+                                td {{p.code}}
+                                td {{p.name}}
+                                td {{p.units}}
+                                td {{p.cost | currency}}
+                                td
+                                    button.btn.btn--m.btn--flat.btn--green(lx-ripple, ng-click="addItem(p.code)", ng-disabled="p.added == 'Y'") Add
+
+
+    .dialog__actions
+        button.btn.btn--m.btn--red.btn--raised(lx-ripple, lx-dialog-close) Close
