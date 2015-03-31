@@ -28,6 +28,7 @@ App.controller('LoginController', function ($scope, $window, LoginService, LxNot
                 var endDate = moment($scope.period.end_date).format('YYYY-MM-DD');
 
                 if (data) {
+                    $window.sessionStorage.setItem('user_id', data.id);
                     $window.sessionStorage.setItem('username', $scope.username);
                     $window.sessionStorage.setItem('startDate', startDate);
                     $window.sessionStorage.setItem('endDate', endDate);

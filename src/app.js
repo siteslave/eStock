@@ -64,6 +64,7 @@ App.controller('ToolbarController', function ($scope, $window, LxNotificationSer
         }, function (res) {
             if (res) {
                 /* Remove session */
+                $window.sessionStorage.removeItem('user_id');
                 $window.sessionStorage.removeItem('username');
                 $window.sessionStorage.removeItem('startDate');
                 $window.sessionStorage.removeItem('endDate');
@@ -92,6 +93,7 @@ App.controller('ToolbarController', function ($scope, $window, LxNotificationSer
      */
     $scope.logout = function () {
         /* Remove session */
+        $window.sessionStorage.removeItem('user_id');
         $window.sessionStorage.removeItem('username');
         $window.sessionStorage.removeItem('startDate');
         $window.sessionStorage.removeItem('endDate');

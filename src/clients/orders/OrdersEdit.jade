@@ -1,11 +1,11 @@
 .fs-headline
     i.icon.icon--l.icon--circled.icon--green.mdi.mdi-shopping
-    | &nbsp; บันทึกเบิกเวชภัณฑ์จากคลังหลัก
+    | &nbsp; แก้ไขข้อมูลเบิกเวชภัณฑ์จากคลังหลัก
 
 div(flex-container="row", flex-gutter="24")
     div(flex-item="3")
         lx-text-field(label="เลขที่เอกสาร")
-            input(type="text", ng-model="orders_code")
+            input(type="text", ng-model="orders_code", ng-disabled="true")
 
     div(flex-item="3")
         lx-date-picker(locale="th", label="วันที่", model="orders_date")
@@ -52,9 +52,9 @@ br
                                         | &nbsp; ลบรายการ
 br
 div(flex-container="row")
-    div(flex-item="10")
+    div(flex-item="11")
         | &nbsp;
-    div(flex-item="2")
+    div(flex-item="1")
         button(ng-click="showNew()", lx-ripple).btn.btn--m.btn--green.btn--fab
             i.mdi.mdi-plus
 

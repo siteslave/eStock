@@ -2,26 +2,44 @@
     i.icon.icon--l.icon--circled.icon--green.mdi.mdi-shopping
     | &nbsp; รายการเบิกจากคลังหลัก
 
+div(flex-container="row", flex-gutter="24")
+    div(flex-item="8")
+        lx-text-field(label="ค้นหา", fixed-label="true", icon="magnify")
+            input(type="text", ng-model="query")
+    div(flex-item="2")
+        button(ng-click="all()").btn.btn--blue.btn--l.btn--raised แสดงทั้งหมด
+    div(flex-item="2")
+        div.switch(class="mt+")
+            input(type="checkbox", checked, ng-click="toggleStatus()")#swStatus.switch__input
+            label(for="swStatus").switch__label อนุมัติแล้ว
+            span.switch__help สถานะอนุมัติ
+
 .data-table-container
     table.data-table.data-table--has-secondary
         thead
             tr
                 th #
+                th วันที่
                 th เลขที่เอกสาร
                 th จำนวน
                 th ราคา
-                th สถานะ
+                th อนุมัติ
+                th เจ้าหน้าที่
                 th
             tr
-                td(colspan="6").divider.divider--dark
+                td(colspan="8").divider.divider--dark
 
         tbody
-            tr(ng-repeat="o in orders").data-table__clickable-row
+            tr(ng-repeat="o in orders | filter: query").data-table__clickable-row
                 td {{ $index+1 }}
-                td {{ o.code }}
+                td {{ o.orders_date | toShortDate }}
+                td {{ o.orders_code }}
                 td {{ o.totalQty | number }}
                 td {{ o.totalPrice | number }}
-                td {{ o.orders_status }}
+                td
+                    i.mdi.mdi-check.icon.icon--s.icon--green.icon--flat(ng-if="o.orders_status == 'Y'")
+                    i.mdi.mdi-checkbox-blank-outline.icon.icon--s.icon--grey.icon--flat(ng-if="o.orders_status == 'N'")
+                td {{ o.user_fullname }}
                 td
                     lx-dropdown(position="right", from-top)
                         button(lx-dropdown-toggle).btn.btn--l.btn--icon.btn--grey
@@ -29,8 +47,18 @@
 
                         lx-dropdown-menu
                             ul
-                                li
-                                    a.dropdown-link XXXX
+                                li(ng-if="o.orders_status=='N'")
+                                    a(href="#/orders/edit/{{o.id}}").dropdown-link
+                                        i.mdi.mdi-pencil
+                                        | &nbsp; แก้ไขข้อมูล
+                                li(ng-if="o.orders_status=='N'")
+                                    a(ng-click="remove(o.id)").dropdown-link
+                                        i.mdi.mdi-recycle
+                                        | &nbsp; ลบใบสั่ง
+                                li(ng-if="o.orders_status=='Y'")
+                                    a.dropdown-link
+                                        i.mdi.mdi-block-helper
+                                        | &nbsp; ไม่สามารถดำเนินการได้
 
     br
     div(flex-container="row")

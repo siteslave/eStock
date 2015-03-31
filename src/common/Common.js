@@ -11,7 +11,8 @@ App.factory('Common', function () {
                 pool: {
                     min: 0,
                     max: 100
-                }
+                },
+                debug: true
             });
         },
         getHISConnection: function () {
@@ -21,7 +22,8 @@ App.factory('Common', function () {
                 pool: {
                     min: 0,
                     max: 100
-                }
+                },
+                debug: true
             });
         },
         

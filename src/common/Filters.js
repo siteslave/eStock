@@ -26,3 +26,13 @@ App.filter('toDateTime', function () {
         }
     };
 });
+
+App.filter('toLongDate', function () {
+    return function (dt) {
+        if (moment(dt).isValid()) {
+            return moment(dt).format('LLL');
+        } else {
+            return '-';
+        }
+    };
+});

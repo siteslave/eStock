@@ -1,18 +1,34 @@
-App.controller('OrdersNewController', function ($scope, $window, $location, $timeout, OrdersNewService, LxNotificationService, LxDialogService) {
+App.controller('OrdersEditController', function ($scope, $window, $location, $routeParams, OrdersEditService, LxNotificationService, LxDialogService) {
 
+    $scope.orders_id = $routeParams.id;
     $scope.products = [];
     $scope.drugs = [];
 
     $scope.init = function () {
 
         // Get products
-        OrdersNewService.getProducts()
-            .then(function (rows) {
-                $scope.products = rows;
-            }, function (err) {
-                console.log(err);
-                LxNotificationService.error('Oop!');
+        var promise = OrdersEditService.getProducts();
+        promise.then(function (rows) {
+            $scope.products = rows;
+            return OrdersEditService.getOrders($scope.orders_id);
+        }).then(function (orders) {
+            $scope.orders_date = orders.orders_date;
+            $scope.orders_code = orders.orders_code;
+            return OrdersEditService.getOrdersDetail($scope.orders_id);
+        }).then(function (rows) {
+            $scope.drugs = rows;
+            // set selected item
+            _.forEach($scope.drugs, function (v) {
+                var idx = _.findIndex($scope.products, {
+                    code: v.code
+                });
+
+                if (idx != -1) $scope.products[idx].added = 'Y';
             });
+        }, function (err) {
+            console.log(err);
+            LxNotificationService.error('Oop!');
+        });
 
     };
 
@@ -50,6 +66,7 @@ App.controller('OrdersNewController', function ($scope, $window, $location, $tim
         } else {
             LxNotificationService.error('กรุณาระบุจำนวนที่ต้องการสั่งซื้อ');
         }
+
     };
 
     $scope.doRemove = function (idx) {
@@ -84,15 +101,16 @@ App.controller('OrdersNewController', function ($scope, $window, $location, $tim
                         orders.user_id = $window.sessionStorage.getItem('user_id');
                         orders.orders_date = moment($scope.orders_date).format('YYYY-MM-DD');
                         orders.orders_code = $scope.orders_code;
-                        orders.created_at = moment().format('YYYY-MM-DD');
+                        orders.orders_id = $scope.orders_id;
+                        orders.updated_at = moment().format('YYYY-MM-DD HH:mm:ss');
 
-                        OrdersNewService.saveOrders(orders)
-                            .then(function (orders_id) {
+                        OrdersEditService.saveOrders(orders)
+                            .then(function () {
                                 // save orders detail
                                 var items = [];
                                 _.forEach($scope.drugs, function (v) {
                                     var obj = {};
-                                    obj.orders_id = orders_id;
+                                    obj.orders_id = $scope.orders_id;
                                     obj.product_code = v.code;
                                     obj.qty = v.qty;
                                     obj.price = v.price;
@@ -100,12 +118,18 @@ App.controller('OrdersNewController', function ($scope, $window, $location, $tim
                                     items.push(obj);
                                 });
 
-                                // save detail
-                                OrdersNewService.saveOrdersDetail(items)
+                                // Clear old data
+                                OrdersEditService.clearOldData($scope.orders_id)
                                     .then(function () {
-                                        $window.location.href = '#/orders/Orders.html';
+                                        // save detail
+                                        OrdersEditService.saveOrdersDetail(items)
+                                            .then(function () {
+                                                $window.location.href = '#/orders/Orders.html';
+                                            }, function (err) {
+                                                console.log('Detail: ' + err);
+                                            });
                                     }, function (err) {
-                                        console.log('Detail: ' + err);
+                                        console.log(err);
                                     });
 
                             }, function (err) {
