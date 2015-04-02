@@ -48,7 +48,7 @@ div(flex-container="row", flex-gutter="24")
                         lx-dropdown-menu
                             ul
                                 li(ng-if="o.orders_status=='N'")
-                                    a(href="#/orders/edit/{{o.id}}").dropdown-link
+                                    a(href="#/edit/{{o.id}}").dropdown-link
                                         i.mdi.mdi-pencil
                                         | &nbsp; แก้ไขข้อมูล
                                 li(ng-if="o.orders_status=='N'")
@@ -65,7 +65,7 @@ div(flex-container="row", flex-gutter="24")
         div(flex-item="11")
             | &nbsp;
         div(flex-item="1")
-            a(href="#/orders/new", lx-ripple).btn.btn--l.btn--red.btn--fab
+            a(href="#/new", lx-ripple).btn.btn--l.btn--red.btn--fab
                 i.mdi.mdi-plus
 
 lx-dialog.dialog.dialog--l#mdlNew(onclose="closingDialog()")

@@ -1,18 +1,17 @@
 App.config(function ($routeProvider) {
 
     $routeProvider
-        .when('/orders', {
+        .when('/', {
             templateUrl: 'OrdersMain.html',
             controller: 'OrdersMainController'
         })
-        .when('/orders/new', {
+        .when('/new', {
             templateUrl: 'OrdersNew.html',
             controller: 'OrdersNewController'
         })
-        .when('/orders/edit/:id', {
+        .when('/edit/:id', {
             templateUrl: 'OrdersEdit.html',
             controller: 'OrdersEditController'
-        })
-        .otherwise({ redirectTo: '/orders' });
+        });
 
 });

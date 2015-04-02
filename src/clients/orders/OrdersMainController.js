@@ -56,7 +56,7 @@ App.controller('OrdersMainController', function ($scope, OrdersMainService, LxNo
                     }, function (err) {
                         console.log(err);
                         LxNotificationService.error('Oop!');
-                    })
+                    });
             }
         });
 

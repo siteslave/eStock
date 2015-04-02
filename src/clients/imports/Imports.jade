@@ -1,0 +1,43 @@
+extends ../../layouts/Client
+
+block scripts
+    script(src="ImportsController.js")
+    script(src="ImportsService.js")
+
+block content
+    div(ng-controller="ImportsController")
+        .fs-headline
+            i.mdi.mdi-google-circles-group.icon.icon--l.icon--green.icon--circled
+            | &nbsp; นำเข้าข้อมูล
+        br
+        div(flex-container="row", flex-gutter="24")
+            div(flex-item="6")
+                div.card(class="p+")
+                    form(name="frmImport")
+                        div(flex-container="row", flex-gutter="24")
+                            div(flex-item="10")
+                                .fs-body-2
+                                    | นำเข้าข้อมูลการจ่ายยาจาก HOSxP/HOSxP_PCU
+
+                            div(flex-item="2")
+                                div#progress.progress-circular--is-small
+
+                        div(flex-container="row", flex-gutter="24")
+                            div(flex-item="6")
+                                lx-date-picker(label="ตั้งแต่", model="startDate", locale="th", ng-required="true")
+                            div(flex-item="6")
+                                lx-date-picker(label="สิ้นสุด", model="endDate", locale="th", ng-required="true")
+
+                        div(flex-container="column", flex-align="space-between center")
+                            div(flex-item)
+                                br
+                                button(ng-click="doImport()", ng-disabled="isImporting").btn.btn--green.btn--l.btn--raised นำเข้าข้อมูล
+                                | &nbsp;
+                                a(href="../pages/Index.html", ng-disabled="isImporting").btn.btn--grey.btn--l.btn--raised หน้าหลัก
+                            div(flex-item, ng-show="isImporting")
+                                .fs-body-2.display-block.tc-grey-500
+                                    | กรุณารอซักครู่....
+            //
+            //div(flex-item="6")
+            //    div.card(class="p+")
+            //        | xxxxx

@@ -124,7 +124,7 @@ App.controller('OrdersEditController', function ($scope, $window, $location, $ro
                                         // save detail
                                         OrdersEditService.saveOrdersDetail(items)
                                             .then(function () {
-                                                $window.location.href = '#/orders/Orders.html';
+                                                $window.location.href = '#/';
                                             }, function (err) {
                                                 console.log('Detail: ' + err);
                                             });

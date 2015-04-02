@@ -1,0 +1,38 @@
+.fs-headline
+    i.mdi.mdi-google-circles-group.icon.icon--circled.icon--l.icon--blue
+    | &nbsp; ข้อมูลการเบิกของคลังย่อย
+.data-table-container
+    table.data-table.data-table--has-secondary
+        thead
+            tr
+                th #
+                th วันที่
+                th จำนวน (รายการ)
+                th ราคา (บาท)
+                th เจ้าหน้าที่
+                th อนุมัติ
+                th
+            tr
+                td(colspan="7").divider.divider--dark
+
+        tbody
+            tr(ng-repeat="o in orders").data-table__clickable-row
+                td {{ $index+1 }}
+                td {{ o.orders_date | toShortDate }}
+                td {{ o.totalQty | number }}
+                td {{ o.totalPrice | number }}
+                td {{ o.fullname }}
+                td
+                    i.mdi.mdi-checkbox-marked.icon.icon--s.icon--flat.icon--green(ng-if="o.orders_status == 'Y'")
+                    i.mdi.mdi-checkbox-blank-outline.icon.icon--s.icon--flat.icon--grey(ng-if="o.orders_status == 'N'")
+                td
+                    lx-dropdown(position="right", from-top)
+                        button.btn.btn--l.btn--grey.btn--icon(lx-dropdown-toggle)
+                            i.mdi.mdi-dots-vertical
+
+                        lx-dropdown-menu
+                            ul
+                                li
+                                    a(href="#/approve/{{o.id}}").dropdown-link
+                                        i.mdi.mdi-checkbox-multiple-marked-outline
+                                        | &nbsp; ดูข้อมูล/อนุมัติ

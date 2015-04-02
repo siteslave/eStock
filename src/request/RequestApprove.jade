@@ -1,0 +1,67 @@
+.fs-headline
+    i.icon.icon--l.icon--circled.icon--green.mdi.mdi-shopping
+    | &nbsp; อนุมัติการเบิกจากคลังย่อย
+div(flex-container="row", flex-gutter="24")
+    div(flex-item="3")
+        lx-text-field(label="เลขที่เอกสาร")
+            input(type="text", ng-model="orders_code", ng-disabled="true")
+    div(flex-item="3")
+        lx-text-field(label="วันที่")
+            input(type="text", ng-model="orders_date", ng-disabled="true")
+br
+br
+.fs-title
+    i.icon.icon--s.icon--flat.icon--grey.mdi.mdi-view-list
+    | &nbsp; รายการเวชภัณฑ์ที่เบิก
+.data-table-container
+    table.data-table.data-table--has-primary
+        thead
+            tr
+                th #
+                th รหัส
+                th รายการ
+                th ราคา (บาท)
+                th จำนวนเบิก
+                th หน่วย
+                th รวม (บาท)
+                th
+            tr
+                td(colspan="8").divider.divider--dark
+        tbody
+            tr(ng-repeat="d in drugs").data-table__clickable-row
+                td {{ $index+1 }}
+                td {{ d.code }}
+                td {{ d.name }}
+                td {{ d.price | number }}
+                td {{ d.qty | number }}
+                td {{ d.units }}
+                td {{ d.price * d.qty | number }}
+                td
+                td
+                    lx-dropdown(position="right", from-top)
+                        button(lx-dropdown-toggle).btn.btn--l.btn--icon.btn--grey
+                            i.mdi.mdi-dots-vertical
+                        lx-dropdown-menu
+                            ul
+                                li
+                                    a.dropdown-link
+                                        i.mdi.mdi-block-helper
+                                        | &nbsp; No action available
+
+    br
+    br
+    div(flex-container="column", flex-align="space-between center")
+        div(flex-item)
+            button(ng-click="doApprove()", ng-disabled="isImported").btn.btn--l.btn--green.btn--raised อนุมัติตามที่ขอเบิก
+            | &nbsp;
+            button(ng-click="doCancel()", ng-disabled="isImported").btn.btn--l.btn--red.btn--raised ยกเลิก/ไม่อนุมัติ
+            | &nbsp;
+            a(href="#/").btn.btn--l.btn--grey.btn--raised กลับหน้าหลัก
+
+
+        div(flex-item, ng-show="isImported")
+            br
+            br
+            .fs-subhead.tc-red-500
+                i.mdi.mdi-information-outline
+                | &nbsp; รายการนี้ได้ถูกนำเข้าเรียบร้อยแล้ว ไม่สามารถนำเข้าได้อีก

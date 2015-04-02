@@ -1,0 +1,12 @@
+extends ../layouts/Main
+
+block scripts
+    script(src="Request.js")
+    script(src="RequestController.js")
+    script(src="RequestService.js")
+
+    script(src="ApproveController.js")
+    script(src="ApproveService.js")
+
+block content
+    div(ng-view)
