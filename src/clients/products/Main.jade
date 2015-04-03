@@ -1,0 +1,50 @@
+.fs-title
+    i.mdi.mdi-cart
+    | &nbsp; รายการเวชภัณฑ์
+div(flex-container="row", ng-show="isLoading")
+    div(flex-item="12")
+        | &nbsp;
+        #progress
+div(flex-container="row", flex-gutter="24", ng-hide="isLoading")
+    div(flex-item)
+        lx-text-field(label="ค้นหา...", fixed-label="true", icon="magnify")
+            input(type="text", ng-model="query")
+
+.data-table-container
+    table.data-table.data-table--has-secondary
+        thead
+            tr
+                th #
+                th รหัส
+                th รายการเวชภัณฑ์
+                th หน่วย
+                th ทุน
+                th ขาย
+                th ขั้นต่ำ
+                th คงเหลือ
+                th
+            tr
+                td(colspan="9").divider.divider--dark
+
+        tbody
+            tr(ng-repeat="p in products | filter: query").data-table__clickable-row
+                td {{$index+1}}
+                td {{p.icode}}
+                td {{p.name}}
+                td {{p.units}}
+                td(style="text-align: right;") {{p.cost}}
+                td(style="text-align: right;") {{p.price}}
+                td(style="text-align: right;") {{p.min_qty | number}}
+                td(style="text-align: right;")
+                    span(style="color: red", ng-if="(p.totalGet - p.totalPaid) <= 0") {{ p.totalGet - p.totalPaid | number }}
+                    span(style="color: green", ng-if="(p.totalGet - p.totalPaid) > 0") {{ p.totalGet - p.totalPaid | number }}
+                td
+                    lx-dropdown(position="right", from-top)
+                        button.btn.btn--l.btn--grey.btn--icon(lx-ripple, lx-dropdown-toggle)
+                            i.mdi.mdi-dots-vertical
+                        lx-dropdown-menu
+                            ul
+                                li
+                                    a(href="#/card/{{ p.icode }}").dropdown-link
+                                        i.mdi.mdi-desktop-mac
+                                        | &nbsp; Stock card...

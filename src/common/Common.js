@@ -23,7 +23,7 @@ App.factory('Common', function () {
                     min: 0,
                     max: 100
                 },
-                debug: true
+                debug: false
             });
         },
         

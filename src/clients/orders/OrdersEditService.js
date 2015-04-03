@@ -7,6 +7,7 @@ App.factory('OrdersEditService', function ($q, Common) {
             var q = $q.defer();
             db('products')
                 .select()
+                .whereNotNull('icode')
                 .orderBy('name', 'asc')
                 .exec(function (err, rows) {
                     if (err) q.reject(err);
@@ -40,9 +41,9 @@ App.factory('OrdersEditService', function ($q, Common) {
         getOrdersDetail: function (orders_id) {
             var q = $q.defer();
             db('client_orders_detail as o')
-                .select('o.id', 'o.qty', 'o.price', 'o.product_code as code', 'p.name')
+                .select('o.id', 'o.qty', 'o.price', 'o.icode', 'p.name')
                 .where('o.orders_id', orders_id)
-                .leftJoin('products as p', 'p.code', 'o.product_code')
+                .leftJoin('products as p', 'p.icode', 'o.icode')
                 .exec(function (err, rows) {
                     if (err) q.reject(err);
                     else q.resolve(rows);

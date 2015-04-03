@@ -21,12 +21,13 @@ div(flex-container="row", flex-gutter="24", ng-hide="isLoading")
                 th รหัส
                 th icode
                 th รายการเวชภัณฑ์
+                th หน่วย
                 th ทุน
                 th ขาย
                 th คงเหลือ
                 th
             tr
-                td(colspan="8").divider.divider--dark
+                td(colspan="9").divider.divider--dark
 
         tbody
             tr(ng-repeat="p in products | filter: query").data-table__clickable-row
@@ -34,6 +35,7 @@ div(flex-container="row", flex-gutter="24", ng-hide="isLoading")
                 td {{p.code}}
                 td {{p.icode}}
                 td {{p.name}}
+                td {{p.units}}
                 td {{p.cost}}
                 td {{p.price}}
                 td {{ 0 }}

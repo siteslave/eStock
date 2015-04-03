@@ -102,5 +102,16 @@ App.controller('ToolbarController', function ($scope, $window, LxNotificationSer
         /* Redirect to login page */
         $window.location.href = '../login/Login.html';
     };
+    $scope.logoutClient = function () {
+        /* Remove session */
+        $window.sessionStorage.removeItem('user_id');
+        $window.sessionStorage.removeItem('username');
+        $window.sessionStorage.removeItem('startDate');
+        $window.sessionStorage.removeItem('endDate');
+        $window.sessionStorage.removeItem('isAdmin');
+        $window.sessionStorage.removeItem('subStockId');
+        /* Redirect to login page */
+        $window.location.href = '../../login/Login.html';
+    };
 
 });

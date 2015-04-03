@@ -31,7 +31,7 @@ br
         tbody
             tr(ng-repeat="d in drugs").data-table__clickable-row
                 td {{ $index+1 }}
-                td {{ d.code }}
+                td {{ d.icode }}
                 td {{ d.name }}
                 td {{ d.price | number }}
                 td {{ d.qty | number }}
@@ -97,11 +97,11 @@ lx-dialog.dialog.dialog--l#mdlNew(onclose="closingDialog()")
                                 td(colspan="5").divider.divider--dark
                         tbody
                             tr(ng-repeat="p in products | filter: query").data-table__clickable-row
-                                td {{p.code}}
+                                td {{p.icode}}
                                 td {{p.name}}
                                 td {{p.units}}
                                 td {{p.cost | currency}}
                                 td
-                                    button.btn.btn--m.btn--flat.btn--green(lx-ripple, ng-click="addItem(p.code)", ng-disabled="p.added == 'Y'") Add
+                                    button.btn.btn--m.btn--flat.btn--green(lx-ripple, ng-click="addItem(p.icode)", ng-disabled="p.added == 'Y'") Add
     .dialog__actions
         button.btn.btn--m.btn--red.btn--raised(lx-ripple, lx-dialog-close) Close

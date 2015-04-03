@@ -15,12 +15,10 @@ block content
                 div.card(class="p+")
                     form(name="frmImport")
                         div(flex-container="row", flex-gutter="24")
-                            div(flex-item="10")
-                                .fs-body-2
-                                    | นำเข้าข้อมูลการจ่ายยาจาก HOSxP/HOSxP_PCU
-
-                            div(flex-item="2")
-                                div#progress.progress-circular--is-small
+                            div(flex-item)
+                                .fs-title.display-block
+                                    i.mdi.mdi-cloud-download
+                                    | &nbsp; นำเข้าข้อมูลการจ่ายยาจาก HIS
 
                         div(flex-container="row", flex-gutter="24")
                             div(flex-item="6")
@@ -28,16 +26,93 @@ block content
                             div(flex-item="6")
                                 lx-date-picker(label="สิ้นสุด", model="endDate", locale="th", ng-required="true")
 
-                        div(flex-container="column", flex-align="space-between center")
+                        div(flex-container="column", flex-align="space-between center", ng-hide="isImporting")
                             div(flex-item)
                                 br
                                 button(ng-click="doImport()", ng-disabled="isImporting").btn.btn--green.btn--l.btn--raised นำเข้าข้อมูล
                                 | &nbsp;
                                 a(href="../pages/Index.html", ng-disabled="isImporting").btn.btn--grey.btn--l.btn--raised หน้าหลัก
-                            div(flex-item, ng-show="isImporting")
-                                .fs-body-2.display-block.tc-grey-500
+                        br
+                        br
+                        div(flex-container="row")
+                            div(flex-item="2")
+                                div#progress.progress-circular--is-small
+                            div(flex-item="10", ng-show="isImporting")
+                                .fs-body-1.display-block.tc-red-500
                                     | กรุณารอซักครู่....
-            //
-            //div(flex-item="6")
-            //    div.card(class="p+")
-            //        | xxxxx
+                                    strong {{ currentQty | number }} / {{ totalQty | number }}
+
+            div(flex-item="6")
+                div.card(class="p+")
+                    .fs-title.display-block
+                        i.mdi.mdi-clock
+                        | &nbsp; ประวัติการนำเข้าข้อมูล
+
+                    .data-table-container
+                        table.data-table.data-table--has-secondary
+                            thead
+                                tr
+                                    th #
+                                    th ตั้งแต่
+                                    th ถึง
+                                    th วันที่นำเข้า
+                                    th ตัด
+                                    th
+                                tr
+                                    td(colspan="6").divider.divider--dark
+
+                            tbody
+                                tr(ng-repeat="i in imported").data-table__clickable-row
+                                    td {{ $index+1 }}
+                                    td {{ i.start_date | toShortDate }}
+                                    td {{ i.end_date | toShortDate }}
+                                    td {{ i.imported_date | toShortDate }}
+                                    td
+                                        i.mdi.mdi-check.icon.icon--s.icon--green.icon--flat(ng-if="i.cutoff == 'Y'")
+                                        i.mdi.mdi-checkbox-blank-outline.icon.icon--s.icon--grey.icon--flat(ng-if="i.cutoff == 'N'")
+                                    td
+                                        lx-dropdown(position="right", from-top)
+                                            button(lx-dropdown-toggle).btn.btn--l.btn--icon.btn--grey
+                                                i.mdi.mdi-dots-vertical
+
+                                            lx-dropdown-menu
+                                                ul
+                                                    li(ng-if="i.cutoff == 'N'")
+                                                        a(ng-click="showCutOff($index, i.start_date, i.end_date)").dropdown-link
+                                                            i.mdi.mdi-filter-outline
+                                                            | &nbsp; ตัดสต๊อก
+                                                    li(ng-if="i.cutoff == 'Y'")
+                                                        a.dropdown-link
+                                                            i.mdi.mdi-block-helper
+                                                            | &nbsp; No action found.
+
+        lx-dialog.dialog.dialog--s#mdlCutOff(onclose="closeCutOff()")
+            .dialog__header
+                .toolbar.bgc-light-blue-500(class="pl++")
+                    span.toolbar__label.tc-white.fs-title
+                        | ยืนยันการตัดสต๊อกจากคลังย่อย (กรุณาอยากปิดหน้าจอขณะนำเข้า)
+
+                    .toolbar__right
+                        button.btn.btn--l.btn--white.btn--icon(lx-ripple, lx-dialog-close)
+                            i.mdi.mdi-close
+            .dialog__content
+                div(class="p++")
+                    div(flex-container="row", flex-gutter="24")
+                        div(flex-item)
+                            lx-text-field(label="ตั้งแต่วันที่")
+                                input(type="text", ng-model="iStartDate", ng-disabled="true")
+                        div(flex-item)
+                            lx-text-field(label="ถึงวันที่")
+                                input(type="text", ng-model="iEndDate", ng-disabled="true")
+                    br
+                    div(flex-container="row", flex-gutter="24", ng-show="isImportingCutOff")
+                        div(flex-item="3")
+                            div#progressImport.progress-circular--is-small
+                        div(flex-item="9")
+                            .fs-body-1.tc-red-500
+                                | กำลังดำเนินการ.... &nbsp;
+                                strong {{ currentCutOff | number }} / {{ totalCutOff | number }}
+            .dialog__actions
+                button.btn.btn--l.btn--red.btn--raised(lx-ripple, ng-click="doCutOff()", ng-disabled="isImportingCutOff") เริ่มการตัดสต๊อก
+                | &nbsp;
+                button.btn.btn--l.btn--grey.btn--raised(lx-ripple, lx-dialog-close, ng-disabled="isImportingCutOff") ปิดหน้าต่าง

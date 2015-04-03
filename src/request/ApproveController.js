@@ -1,4 +1,4 @@
-App.controller('ApproveController', function ($scope, $routeParams, $filter, ApproveService, LxNotificationService) {
+App.controller('ApproveController', function ($scope, $routeParams, $filter, $window, ApproveService, LxNotificationService) {
 
     $scope.orders_id = $routeParams.orders_id;
 
@@ -41,7 +41,7 @@ App.controller('ApproveController', function ($scope, $routeParams, $filter, App
                         objMain.act_code = $scope.orders_code;
                         objMain.act_name = 'คลังย่อย';
                         objMain.act_date = moment($scope.true_orders_date).format('YYYY-MM-DD');
-                        objMain.product_code = v.code;
+                        objMain.icode = v.icode;
                         objMain.paid_qty = v.qty;
                         objMain.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
                         itemsMain.push(objMain);
@@ -49,7 +49,7 @@ App.controller('ApproveController', function ($scope, $routeParams, $filter, App
                         objClient.act_code = $scope.orders_code;
                         objClient.act_name = 'คลังหลัก';
                         objClient.act_date = moment($scope.true_orders_date).format('YYYY-MM-DD');
-                        objClient.product_code = v.code;
+                        objClient.icode = v.icode;
                         objClient.get_qty = v.qty;
                         objClient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
                         itemsClient.push(objClient);
@@ -63,7 +63,7 @@ App.controller('ApproveController', function ($scope, $routeParams, $filter, App
                     }).then(function () {
                         return ApproveService.updateClientRequestStatus($scope.orders_id);
                     }).then(function () {
-                        LxNotificationService.success('Update stock card successfully');
+                        $window.location.href = '#/';
                     }, function (err) {
                         console.log(err);
                         LxNotificationService.error('Oop!');

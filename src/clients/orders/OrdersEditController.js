@@ -20,7 +20,7 @@ App.controller('OrdersEditController', function ($scope, $window, $location, $ro
             // set selected item
             _.forEach($scope.drugs, function (v) {
                 var idx = _.findIndex($scope.products, {
-                    code: v.code
+                    icode: v.icode
                 });
 
                 if (idx != -1) $scope.products[idx].added = 'Y';
@@ -36,12 +36,12 @@ App.controller('OrdersEditController', function ($scope, $window, $location, $ro
         LxDialogService.open('mdlNew');
     };
 
-    $scope.addItem = function (code) {
+    $scope.addItem = function (icode) {
         var qty = prompt('ระบุจำนวนที่ต้องการสั่ง', '0');
 
         if (qty > 0) {
             var idx = _.findIndex($scope.products, {
-                code: code
+                icode: icode
             });
 
             if(idx != -1) {
@@ -72,7 +72,7 @@ App.controller('OrdersEditController', function ($scope, $window, $location, $ro
     $scope.doRemove = function (idx) {
 
         var idxProduct = _.findIndex($scope.products, {
-            code: $scope.drugs[idx].code
+            icode: $scope.drugs[idx].icode
         });
 
         LxNotificationService.confirm('ยืนยันการลบ', 'คุณต้องการลบรายการนี้ออกจากการสั่งซื้อ ใช่หรือไม่?', {
@@ -111,7 +111,7 @@ App.controller('OrdersEditController', function ($scope, $window, $location, $ro
                                 _.forEach($scope.drugs, function (v) {
                                     var obj = {};
                                     obj.orders_id = $scope.orders_id;
-                                    obj.product_code = v.code;
+                                    obj.icode = v.icode;
                                     obj.qty = v.qty;
                                     obj.price = v.price;
 

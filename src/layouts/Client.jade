@@ -39,6 +39,10 @@ html(lang="en")
                                     | &nbsp; Connection setting
                             li.dropdown-divider
                             li
+                                a(ng-click="logoutClient()").dropdown-link
+                                    i.mdi.mdi-logout
+                                    | &nbsp; Logout
+                            li
                                 a(ng-click="exitApplication()").dropdown-link
                                     i.mdi.mdi-power
                                     | &nbsp; Exit program
@@ -63,13 +67,13 @@ html(lang="en")
                                 span.display-block Orders
                                 span.display-block.fs-body-1.tc-black-2 เบิกเวชภัณฑ์
 
-                        li.list-row.list-row--has-separator
-                            .list-row__primary
-                                a
-                                    i.icon.icon--l.icon--deep-purple.icon--circled.mdi.mdi-wallet-membership
-                            .list-row__content
-                                span.display-block Stock Card
-                                span.display-block.fs-body-1.tc-black-2 ข้อมูลสต๊อกการ์ด
+                        //li.list-row.list-row--has-separator
+                        //    .list-row__primary
+                        //        a
+                        //            i.icon.icon--l.icon--deep-purple.icon--circled.mdi.mdi-wallet-membership
+                        //    .list-row__content
+                        //        span.display-block Stock Card
+                        //        span.display-block.fs-body-1.tc-black-2 ข้อมูลสต๊อกการ์ด
 
                         li.list-row.list-row--has-separator
                             .list-row__primary
