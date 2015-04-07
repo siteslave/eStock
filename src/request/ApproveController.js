@@ -30,10 +30,11 @@ App.controller('ApproveController', function ($scope, $routeParams, $filter, $wi
                 cancel: 'ไม่ใช่'
             }, function (res) {
                 if (res) {
-                    var itemsMain = [];
-                    var itemsClient = [];
+                    var Q = require('q');
+                    require('q-foreach')(Q);
 
-                    _.forEach($scope.drugs, function (v) {
+                    Q.forEach($scope.drugs, function (v) {
+                        var defer = Q.defer();
 
                         var objMain = {};
                         var objClient = {};
@@ -44,7 +45,6 @@ App.controller('ApproveController', function ($scope, $routeParams, $filter, $wi
                         objMain.icode = v.icode;
                         objMain.paid_qty = v.qty;
                         objMain.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
-                        itemsMain.push(objMain);
                         // Client
                         objClient.act_code = $scope.orders_code;
                         objClient.act_name = 'คลังหลัก';
@@ -52,22 +52,28 @@ App.controller('ApproveController', function ($scope, $routeParams, $filter, $wi
                         objClient.icode = v.icode;
                         objClient.get_qty = v.qty;
                         objClient.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
-                        itemsClient.push(objClient);
 
-                    });
+                        ApproveService.saveMainStockCard(objMain)
+                            .then(function () {
+                                return ApproveService.saveClientStockCard(objClient);
+                            })
+                            .then(function () {
+                                return ApproveService.updateClientRequestStatus($scope.orders_id);
+                            })
+                            .then(function () {
+                                defer.resolve();
+                            }, function (err) {
+                                console.log(err);
+                            });
 
-                    // Do save
-                    var promise = ApproveService.saveMainStockCard(itemsMain);
-                    promise.then(function () {
-                        return ApproveService.saveClientStockCard(itemsClient);
-                    }).then(function () {
-                        return ApproveService.updateClientRequestStatus($scope.orders_id);
-                    }).then(function () {
+                        return defer.promise;
+                    }).then(function (success) {
                         $window.location.href = '#/';
                     }, function (err) {
                         console.log(err);
                         LxNotificationService.error('Oop!');
                     });
+
                 }
             });
 

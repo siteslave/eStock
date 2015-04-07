@@ -81,4 +81,78 @@ App.controller('MainController', function ($scope, MainService, LxNotificationSe
             });
     };
 
+    // Import products
+    $scope.doImport = function () {
+
+        var Q = require('q');
+        require('q-foreach')(Q);
+
+        LxNotificationService.confirm('Confirmation.', 'คุณต้องการนำเข้าข้อมูลยาจากฐานกลาง ใช่หรือไม่?', {
+            ok: 'ใช่, ฉันต้องการนำเข้าข้อมูล',
+            cancel: 'ไม่ใช่'
+        }, function (res) {
+            if (res) {
+
+                $scope.isImporting = true;
+                LxProgressService.linear.show('#009688', '#progress');
+
+                MainService.dcGetProduct()
+                    .then(function (data) {
+                        // do import
+                        Q.forEach(data, function (v) {
+                            var defer = Q.defer();
+
+                            MainService.checkDuplicated(v.code)
+                                .then(function (duplicated) {
+                                    if (!duplicated) {
+                                        MainService.doImportDrug(v)
+                                            .then(function () {
+                                                // success
+                                            }, function (err) {
+                                                defer.reject(err);
+                                                console.log(err);
+                                            });
+                                    } else {
+                                        MainService.doUpdateDrug(v)
+                                            .then(function () {
+                                                // success
+                                            }, function (err) {
+                                                defer.reject(err);
+                                                console.log(err);
+                                            });
+                                    }
+
+                                    defer.resolve();
+                                }, function (err) {
+                                    defer.reject(err);
+                                    console.log(err);
+                                });
+
+                            return defer.promise;
+
+                        }).then(function () {
+
+                            LxNotificationService.success('นำเข้าข้อมูลเสร็จแล้ว');
+                            LxProgressService.linear.hide('#progress');
+                            $scope.isImporting = false;
+
+                        });
+
+                    }, function (err) {
+                        if (angular.isObject(err)) {
+                            console.log(err);
+                            LxNotificationService.error('Oop!');
+                            LxProgressService.linear.hide('#progress');
+                            $scope.isImporting = false;
+                        } else {
+                            LxProgressService.linear.hide('#progress');
+                            LxNotificationService.error(err);
+                            $scope.isImporting = false;
+                        }
+
+                    });
+            }
+        });
+    };
+
 });

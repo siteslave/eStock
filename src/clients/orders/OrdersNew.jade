@@ -94,16 +94,18 @@ lx-dialog.dialog.dialog--l#mdlNew(onclose="closingDialog()")
                                 th รายการ
                                 th หน่วย
                                 th ราคา
+                                th คงเหลือ
                                 th
                             tr
-                                td(colspan="5").divider.divider--dark
+                                td(colspan="6").divider.divider--dark
                         tbody
                             tr(ng-repeat="p in products | filter: query").data-table__clickable-row
                                 td {{p.icode}}
                                 td {{p.name}}
                                 td {{p.units}}
                                 td {{p.cost | currency}}
+                                th {{ p.balance | number }}
                                 td
-                                    button.btn.btn--m.btn--flat.btn--green(lx-ripple, ng-click="addItem(p.icode)", ng-disabled="p.added == 'Y'") Add
+                                    button.btn.btn--m.btn--flat.btn--green(lx-ripple, ng-click="addItem(p.icode)", ng-disabled="p.added == 'Y' || p.qty > p.min_qty") Add
     .dialog__actions
         button.btn.btn--m.btn--red.btn--raised(lx-ripple, lx-dialog-close) Close

@@ -124,15 +124,13 @@ App.factory('ImportsService', function ($q, Common) {
         importStockCard: function (v) {
             var q = $q.defer();
 
-            db('client_stock_card')
-                .insert({
-                    act_code: v.vn,
-                    act_date: moment(v.vstdate).format('YYYY-MM-DD'),
-                    act_name: v.hn,
-                    icode: v.icode,
-                    paid_qty: v.qty,
-                    created_at: moment().format('YYYY-MM-DD HH:mm:ss')
-                })
+            var act_date = moment(v.vstdate).format('YYYY-MM-DD');
+            var created_at =  moment().format('YYYY-MM-DD HH:mm:ss');
+
+            var sql = 'insert into client_stock_card set act_code=?, act_date=?, act_name=?, ' +
+                'icode=?, paid_qty=?, created_at=? ON DUPLICATE KEY UPDATE paid_qty=?';
+
+            db.raw(sql, [v.vn, act_date, v.hn, v.icode, v.qty, created_at, v.qty])
                 .exec(function (err) {
                     if (err) q.reject(err);
                     else q.resolve();

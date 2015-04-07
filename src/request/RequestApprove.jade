@@ -30,7 +30,7 @@ br
         tbody
             tr(ng-repeat="d in drugs").data-table__clickable-row
                 td {{ $index+1 }}
-                td {{ d.code }}
+                td {{ d.icode }}
                 td {{ d.name }}
                 td {{ d.price | number }}
                 td {{ d.qty | number }}

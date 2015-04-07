@@ -138,7 +138,7 @@ App.factory('OrdersService', function($q, $http, $window, Common) {
             var q = $q.defer();
 
             db('orders_detail as o')
-                .select('o.*', 'p.id', 'p.icode', 'p.name', 'p.units')
+                .select('o.*', 'p.id', 'p.icode', 'p.code', 'p.name', 'p.units')
                 .leftJoin('products as p', 'p.icode', 'o.icode')
                 .where('o.orders_id', orderId)
                 .exec(function(err, rows) {

@@ -11,7 +11,7 @@ div(flex-container="row", flex-gutter="24", ng-hide="isLoading")
             input(type="text", ng-model="query")
 
     div(flex-item="3")
-        button.btn.btn--l.btn--red.btn--raised นำเข้ารายการเวชภัณฑ์
+        button(ng-click="doImport()", ng-disabled="isImporting").btn.btn--l.btn--red.btn--raised นำเข้ารายการเวชภัณฑ์
 
 .data-table-container
     table.data-table.data-table--has-secondary

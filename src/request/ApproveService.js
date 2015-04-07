@@ -40,28 +40,40 @@ App.factory('ApproveService', function ($q, Common) {
         },
 
         // Save main stock card
-        saveMainStockCard: function (items) {
+        saveMainStockCard: function (item) {
             var q = $q.defer();
+            var sql = 'insert into main_stock_card set act_code=?, act_date=?, act_name=?, ' +
+                'icode=?, paid_qty=?, created_at=? ' +
+                'ON DUPLICATE KEY UPDATE paid_qty=?';
 
-            db('main_stock_card')
-                .insert(items)
+            db.raw(sql, [item.act_code, item.act_date, item.act_name, item.icode,
+                item.paid_qty, item.created_at, item.paid_qty])
                 .exec(function (err) {
-                    if (err) q.reject(err);
-                    else q.resolve();
+                    if (err) {
+                        q.reject(err);
+                    } else {
+                        q.resolve();
+                    }
                 });
 
             return q.promise;
         },
 
         // Save client stock card
-        saveClientStockCard: function (items) {
+        saveClientStockCard: function (item) {
             var q = $q.defer();
+            var sql = 'insert into client_stock_card set act_code=?, act_date=?, act_name=?, ' +
+                'icode=?, get_qty=?, created_at=? ' +
+                'ON DUPLICATE KEY UPDATE get_qty=?';
 
-            db('client_stock_card')
-                .insert(items)
+            db.raw(sql, [item.act_code, item.act_date, item.act_name, item.icode,
+                item.get_qty, item.created_at, item.get_qty])
                 .exec(function (err) {
-                    if (err) q.reject(err);
-                    else q.resolve();
+                    if (err) {
+                        q.reject(err);
+                    } else {
+                        q.resolve();
+                    }
                 });
 
             return q.promise;
