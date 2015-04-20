@@ -30,9 +30,6 @@ App.controller('ApproveController', function ($scope, $routeParams, $filter, $wi
                 cancel: 'ไม่ใช่'
             }, function (res) {
                 if (res) {
-                    var Q = require('q');
-                    require('q-foreach')(Q);
-
                     Q.forEach($scope.drugs, function (v) {
                         var defer = Q.defer();
 

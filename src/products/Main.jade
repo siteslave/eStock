@@ -6,13 +6,15 @@ div(flex-container="row", ng-show="isLoading")
         | &nbsp;
         #progress
 div(flex-container="row", flex-gutter="24", ng-hide="isLoading")
-    div(flex-item="9")
+    div(flex-item="7")
         lx-text-field(label="ค้นหา...", fixed-label="true", icon="magnify")
             input(type="text", ng-model="query")
 
-    div(flex-item="3")
-        button(ng-click="doImport()", ng-disabled="isImporting").btn.btn--l.btn--red.btn--raised นำเข้ารายการเวชภัณฑ์
-
+    div(flex-item="5")
+        button(ng-click="doImport()", ng-disabled="isImporting || isImportingCode").btn.btn--l.btn--red.btn--raised นำเข้า
+        | &nbsp;
+        button(ng-click="updateCode()", ng-disabled="isImportingCode").btn.btn--l.btn--green.btn--raised ปรับปรุงรหัสมาตรฐาน
+        div#progressStdCode
 .data-table-container
     table.data-table.data-table--has-secondary
         thead
@@ -32,13 +34,15 @@ div(flex-container="row", flex-gutter="24", ng-hide="isLoading")
         tbody
             tr(ng-repeat="p in products | filter: query").data-table__clickable-row
                 td {{$index+1}}
-                td {{p.code}}
-                td {{p.icode}}
+                td(style="text-align: center;") {{p.code}}
+                td(style="text-align: center;") {{p.icode}}
                 td {{p.name}}
-                td {{p.units}}
-                td {{p.cost}}
-                td {{p.price}}
-                td {{ 0 }}
+                td(style="text-align: center;") {{p.units}}
+                td(style="text-align: right;") {{p.cost}}
+                td(style="text-align: right;") {{p.price}}
+                td(style="text-align: right;")
+                    span(style="color: red", ng-if="(p.totalGet - p.totalPaid) <= 0") {{ p.totalGet - p.totalPaid | number }}
+                    span(style="color: green", ng-if="(p.totalGet - p.totalPaid) > 0") {{ p.totalGet - p.totalPaid | number }}
                 td
                     lx-dropdown(position="right", from-top)
                         button.btn.btn--l.btn--grey.btn--icon(lx-ripple, lx-dropdown-toggle)
@@ -51,7 +55,7 @@ div(flex-container="row", flex-gutter="24", ng-hide="isLoading")
                                         | &nbsp; Map รหัสเวชภัณฑ์
 
                                 li
-                                    a(href="#/card").dropdown-link
+                                    a(href="#/card/{{p.icode}}").dropdown-link
                                         i.mdi.mdi-desktop-mac
                                         | &nbsp; Stock card...
 

@@ -118,9 +118,10 @@ block content
                                 th จำนวน(รายการ)
                                 th ชื่อผู้เบิก
                                 th สถานะ
+                                th นำเข้า
                                 th
                             tr
-                                td(colspan="7").divider.divider--dark
+                                td(colspan="8").divider.divider--dark
                         tbody
                             tr(ng-repeat="o in onlineOrders | filter: queryOnline").data-table__clickable-row
                                 td {{ o.orders_date | toShortDate }}
@@ -128,20 +129,28 @@ block content
                                 td  {{ o.total_qty | number }}
                                 td {{ o.client_staff_name }}
                                 td {{ o.status_name }}
+                                td(style="text-align: center;")
+                                    i.icon.icon--s.icon--green.icon--flat.mdi.mdi-check(ng-if="o.client_imported == 'Y'")
+                                    i.icon.icon--s.icon--red.icon--flat.mdi.mdi-close(ng-if="o.client_imported == 'N'")
                                 td
                                     lx-dropdown(position="right", from-top)
                                         button.btn.btn--l.btn--grey.btn--icon(lx-ripple, lx-dropdown-toggle)
                                             i.mdi.mdi-dots-vertical
                                         lx-dropdown-menu
                                             ul
-                                                li(ng-if="o.approved_date")
+                                                li(ng-if="o.orders_status_id == 2 && o.client_imported == 'N'")
                                                     a(ng-click="getOnlineDetail(o.id)").dropdown-link
                                                         i.mdi.mdi-desktop-mac
                                                         | &nbsp; ดูรายละเอียด/นำเข้าข้อมูล
-                                                li(ng-if="!o.approved_date")
+                                                li(ng-if="o.orders_status_id != 2 && o.client_imported == 'N'")
                                                     a(ng-click="cancelOrder(o.orders_code)").dropdown-link
                                                         i.mdi.mdi-recycle
                                                         | &nbsp; ยกเลิกรายการเบิก
+
+                                                li(ng-if="o.orders_status_id != 2 && o.client_imported == 'Y'")
+                                                    a.dropdown-link
+                                                        i.mdi.mdi-recycle
+                                                        | &nbsp; No action.
 
             lx-tab(heading="ตรวจสอบยอดคงเหลือ (Online)")
                 | ssssss
@@ -271,9 +280,12 @@ block content
                             | &nbsp;รายละเอียดการอนุมัติเวชภัณฑ์
                         div(flex-container="row", flex-gutter="24")
                             div(flex-item="3")
+                                lx-text-field(label="เลขที่ใบสั่ง")
+                                    input(type="text", ng-model="orderOnlineDetail.orders_code", ng-disabled="true")
+                            div(flex-item="3")
                                 lx-text-field(label="วันที่อนุมัติ")
                                     input(type="text", ng-model="approved_date", ng-disabled="true")
-                            div(flex-item="9")
+                            div(flex-item="6")
                                 lx-text-field(label="อนุมัติโดย")
                                     input(type="text", ng-model="approved_by", ng-disabled="true")
 
@@ -312,8 +324,8 @@ block content
                                                     ul
                                                         li
                                                             a.dropdown-link
-                                                                i.mdi.mdi-close
-                                                                | &nbsp;Remove
+                                                                i.mdi.mdi-block-helper
+                                                                | &nbsp;No action.
             .dialog__actions
                 button.btn.btn--m.btn--green.btn--raised(lx-ripple, ng-click="doImport()") นำเข้าข้อมูล
                 | &nbsp;

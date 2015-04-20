@@ -8,7 +8,24 @@ App.factory('MainService', function ($q, $http, Common) {
         all: function () {
             var q = $q.defer();
 
+            var sql = 'select p.*, ' +
+                '(select sum(get_qty) from main_stock_card where icode=p.icode) as totalGet, ' +
+                '(select sum(paid_qty) from main_stock_card where icode=p.icode) as totalPaid ' +
+                'from products as p order by name';
+            db.raw(sql)
+                .exec(function (err, rows) {
+                    if (err) q.reject(err);
+                    else q.resolve(rows[0]);
+                });
+
+            return q.promise;
+        },
+
+        allWithCode: function () {
+            var q = $q.defer();
+
             db('products')
+                .whereNotNull('stdcode')
                 .orderBy('name')
                 .exec(function (err, rows) {
                     if (err) q.reject(err);
@@ -131,6 +148,25 @@ App.factory('MainService', function ($q, $http, Common) {
                     else {
                         var isDuplicated = rows[0].total > 0;
                         q.resolve(isDuplicated);
+                    }
+                });
+
+            return q.promise;
+        },
+
+        doUpdateStdCode: function (v) {
+            var q = $q.defer();
+
+            dbHIS('drugitems')
+                .update({
+                    did: v.stdcode
+                })
+                .where('icode', v.icode)
+                .exec(function (err) {
+                    if (err) {
+                        q.reject(err);
+                    } else {
+                        q.resolve();
                     }
                 });
 

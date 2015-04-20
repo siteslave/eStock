@@ -24,7 +24,7 @@ App.factory('OrdersService', function($q, $http, $window, Common) {
             var q = $q.defer();
             db('products')
                 .where('name', 'like', '%' + query + '%')
-                .whereNotNull('icode')
+                .whereRaw('length(icode) > 0')
                 .orderBy('name', 'asc')
                 .exec(function(err, rows) {
                     if (err) q.reject(err);
@@ -60,6 +60,7 @@ App.factory('OrdersService', function($q, $http, $window, Common) {
                 .insert({
                     orders_id: orderId,
                     icode: data.icode,
+                    code: data.code,
                     qty: data.qty,
                     cost: data.cost
                 })
@@ -344,6 +345,30 @@ App.factory('OrdersService', function($q, $http, $window, Common) {
             return q.promise;
         },
 
+        updateClientOrdersStatus: function (id) {
+            var q = $q.defer();
+
+            var options = {
+                method: 'POST',
+                url: config.dc.url + '/api/orders/update_client_orders_stats',
+                data: {
+                    id: id,
+                    hospcode: config.dc.hospcode,
+                    key: config.dc.private_key
+                }
+            };
+
+            $http(options)
+                .success(function(data) {
+                    q.resolve(data);
+                })
+                .error(function() {
+                    q.reject('Internet connection failed.');
+                });
+
+            return q.promise;
+        },
+
         /** Save receive order **/
         saveReceivedOrder: function (orders) {
             var q = $q.defer();
@@ -365,25 +390,20 @@ App.factory('OrdersService', function($q, $http, $window, Common) {
             return q.promise;
         },
 
-        saveReceiveOrderDetail: function (v, id) {
-
+        saveMainStockCard: function (item) {
             var q = $q.defer();
+            var sql = 'insert into main_stock_card set act_code=?, act_date=?, act_name=?, ' +
+                'icode=?, get_qty=?, created_at=? ' +
+                'ON DUPLICATE KEY UPDATE paid_qty=?';
 
-            db('received_orders_detail')
-                .insert({
-                    icode: v.icode,
-                    cost: v.cost,
-                    price: v.price,
-                    request_qty: v.qty,
-                    approved_qty: v.approve_qty,
-                    received_orders_id: id,
-                    stdcode: v.stdcode,
-                    lots: v.lot_name,
-                    created_at: moment().format('YYYY-MM-DD HH:mm:ss')
-                })
+            db.raw(sql, [item.act_code, item.act_date, item.act_name, item.icode,
+                item.get_qty, item.created_at, item.paid_qty])
                 .exec(function (err) {
-                    if (err) q.reject(err);
-                    else q.resolve();
+                    if (err) {
+                        q.reject(err);
+                    } else {
+                        q.resolve();
+                    }
                 });
 
             return q.promise;
@@ -394,7 +414,10 @@ App.factory('OrdersService', function($q, $http, $window, Common) {
 
             db('orders')
                 .where('orders_code', ordersCode)
-                .update('is_imported', 'Y')
+                .update({
+                    is_imported: 'Y',
+                    imported_at: moment().format('YYYY-MM-DD HH:mm:ss')
+                })
                 .exec(function (err) {
                     if (err) q.reject(err);
                     else q.resolve();
@@ -406,13 +429,13 @@ App.factory('OrdersService', function($q, $http, $window, Common) {
         isImported: function (orderCode) {
             var q = $q.defer();
 
-            db('received_orders')
-                .count('* as total')
+            db('orders')
+                .select('is_imported')
                 .where('orders_code', orderCode)
                 .exec(function (err, rows) {
                     if (err) q.reject(err);
                     else {
-                        var isExist = rows[0].total > 0;
+                        var isExist = rows[0].is_imported == 'Y';
                         q.resolve(isExist);
                     }
                 });

@@ -328,7 +328,8 @@ App.controller('OrdersController', function($scope, $filter, OrdersService, LxNo
                         _.forEach(detail, function(v) {
                             orders.items.push({
                                 code: v.code,
-                                qty: v.qty
+                                qty: v.qty,
+                                icode: v.icode
                             });
                         });
 
@@ -437,7 +438,8 @@ App.controller('OrdersController', function($scope, $filter, OrdersService, LxNo
                 if (data.ok) {
                     $scope.productOnline = data.products;
                     $scope.orderOnlineDetail = data.orders;
-
+                    //$scope.approve_orders_code = data.orders.orders_code;
+                    $scope.approve_orders_id = id;
                     $scope.approved_date = $filter('toShortDate')(data.orders.created_at);
                     $scope.approved_by = data.orders.master_staff_name;
 
@@ -469,15 +471,25 @@ App.controller('OrdersController', function($scope, $filter, OrdersService, LxNo
                         if (isExist) {
                             LxNotificationService.warning('รายการนี้ได้ถูกนำเข้าข้อมูลแล้ว ไม่สามารถนำเข้าได้อีก');
                         } else {
-                            var promise = OrdersService.updateOrderImportStatus($scope.orderOnlineDetail.orders_code);
-                            promise.then(function () {
-                                return OrdersService.saveReceivedOrder($scope.orderOnlineDetail);
-                            }).then(function (id) {
+                            var promise =
+                                OrdersService.updateOrderImportStatus($scope.orderOnlineDetail.orders_code);
 
+                            promise.then(function () {
+                                return OrdersService.updateClientOrdersStatus($scope.approve_orders_id);
+                            }).then(function (id) {
                                 Q.forEach($scope.productOnline, function (v) {
 
                                     var defer = Q.defer();
-                                    OrdersService.saveReceiveOrderDetail(v, id)
+                                    var objMain = {};
+                                    // Main
+                                    objMain.act_code = $scope.orderOnlineDetail.orders_code;
+                                    objMain.act_name = 'คลังหลัก';
+                                    objMain.act_date = moment().format('YYYY-MM-DD');
+                                    objMain.icode = v.icode;
+                                    objMain.get_qty = v.approve_qty;
+                                    objMain.created_at = moment().format('YYYY-MM-DD HH:mm:ss');
+
+                                    OrdersService.saveMainStockCard(objMain, id)
                                         .then(function () {
                                             defer.resolve();
                                         });
@@ -485,6 +497,7 @@ App.controller('OrdersController', function($scope, $filter, OrdersService, LxNo
                                     return defer.promise;
 
                                 }).then(function () {
+                                    $scope.getOnline();
                                     LxNotificationService.success('นำเข้ารายการเสร็จเรียบร้อยแล้ว');
                                     LxDialogService.close('mdlOnlineDetail');
                                 });
@@ -503,6 +516,9 @@ App.controller('OrdersController', function($scope, $filter, OrdersService, LxNo
     $scope.closingOnlineDetail = function () {
         $scope.productOnline = null;
         $scope.orderOnlineDetail = null;
+        $scope.approved_date = null;
+        $scope.approved_by = null;
+        $scope.approve_orders_id = null;
     };
 
     // Cancel orders online

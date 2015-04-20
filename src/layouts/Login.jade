@@ -7,6 +7,18 @@ html(lang="en")
 
         title eStock (Drug inventory system for PCU)
 
+        script(src="../../vendor/jquery/dist/jquery.min.js")
+        script(src="../../vendor/velocity/velocity.min.js")
+        script(src="../../vendor/moment/min/moment-with-locales.min.js")
+        script(src="../../vendor/angular/angular.js")
+        script(src="../../vendor/angular-route/angular-route.js")
+        script(src="../../vendor/lumx/dist/lumx.min.js")
+        script(src="../app.js")
+        script(src="../common/Common.js")
+        //- Application scripts
+        block scripts
+
+
         link(href="../../vendor/lumx/dist/lumx.css", rel="stylesheet")
         link(href="../../vendor/mdi/css/materialdesignicons.css", rel="stylesheet")
         link(href="../css/app.css", rel="stylesheet")
@@ -40,15 +52,3 @@ html(lang="en")
             div(flex-item="6")
                 .card(class="p+")
                     block content
-
-        script(src="../../vendor/jquery/dist/jquery.min.js")
-        script(src="../../vendor/velocity/velocity.min.js")
-        script(src="../../vendor/moment/min/moment-with-locales.min.js")
-        script(src="../../vendor/angular/angular.js")
-        script(src="../../vendor/angular-route/angular-route.js")
-        script(src="../../vendor/lumx/dist/lumx.min.js")
-
-        script(src="../app.js")
-        script(src="../common/Common.js")
-        //- Application scripts
-        block scripts

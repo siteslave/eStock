@@ -7,7 +7,7 @@ App.factory('OrdersEditService', function ($q, Common) {
             var q = $q.defer();
             db('products')
                 .select()
-                .whereNotNull('icode')
+                .whereRaw('length(icode) > 0')
                 .orderBy('name', 'asc')
                 .exec(function (err, rows) {
                     if (err) q.reject(err);

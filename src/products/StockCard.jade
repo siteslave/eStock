@@ -1,0 +1,73 @@
+.fs-headline
+    i.mdi.mdi-filter.icon.icon--l.icon--green.icon--circled
+    | &nbsp; Stock card
+
+div(flex-container="row", flex-gutter="24")
+    div(flex-item="1")
+        lx-text-field(label="รหัส")
+            input(type="text", ng-model="drugCode", disabled)
+    div(flex-item="4")
+        lx-text-field(label="รายการ")
+            input(type="text", ng-model="drugName", disabled)
+    div(flex-item="2")
+        lx-date-picker(label="ตั้งแต่", model="startDate", locale="th")
+    div(flex-item="2")
+        lx-date-picker(label="ถึง", model="endDate", locale="th")
+    div(flex-item="3")
+        br
+        button(ng-click="doGetCard()").btn.btn--l.btn--green.btn--raised
+            | แสดงข้อมูล
+        | &nbsp;
+        a(href="#/").btn.btn--l.btn--grey.btn--raised
+            | กลับ
+br
+div(flex-container="row")
+    div(flex-item)
+        div#progress
+
+.data-table-container
+    table.data-table.data-table--has-secondary
+        thead
+            tr
+                th(style="text-align: center;") #
+                th(style="text-align: center;") วันที่
+                th(style="text-align: center;") เลขที่
+                th(style="text-align: center;") รายการ
+                th(style="text-align: right;") รับ
+                th(style="text-align: right;") จ่าย
+                th(style="text-align: right;") คงเหลือ
+                th(style="text-align: center;")
+            tr
+                td(colspan="8").divider.divider--dark
+        tbody
+            tr.data-table__clickable-row(ng-repeat="p in products")
+                td(style="text-align: center;") {{ $index + 1 }}
+                td(style="text-align: center;") {{ p.act_date | toShortDate }}
+                td(style="text-align: center;") {{ p.act_code }}
+                td {{ p.act_name }}
+                td(style="text-align: right;") {{ p.get_qty | number }}
+                td(style="text-align: right;") {{ p.paid_qty | number }}
+                td(style="text-align: right;")
+                    span(style="color: red;", ng-if="p.currentTotal <= 0") {{ p.currentTotal | number }}
+                    span(style="color: green;", ng-if="p.currentTotal > 0") {{ p.currentTotal | number }}
+                td
+                    lx-dropdown(position="right", from-top)
+                        button.btn.btn--l.btn--grey.btn--icon(lx-ripple, lx-dropdown-toggle)
+                            i.mdi.mdi-dots-vertical
+                        lx-dropdown-menu
+                            ul
+                                li
+                                    a.dropdown-link
+                                        i.mdi.mdi-block-helper
+                                        | &nbsp; No action
+        tfoot
+            tr
+                td(style="text-align: right;", colspan="4")
+                    strong รวม &nbsp;
+                td
+                    strong {{ totalQtyIn | number }}
+                td
+                    strong {{ totalQtyOut | number }}
+                td
+                    strong(style="color: red;", ng-if="totalQty <= 0") {{ totalQty | number }}
+                    strong(style="color: green;", ng-if="totalQty > 0") {{ totalQty | number }}
